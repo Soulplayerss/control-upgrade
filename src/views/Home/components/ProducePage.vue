@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, watch, h, nextTick, onMounted } from 'vue'
+import { ref } from 'vue'
 import VChart from 'vue-echarts'
 import 'echarts-liquidfill'
 import { VueDraggable } from 'vue-draggable-plus'
@@ -42,10 +42,6 @@ const list1 = ref([
 
 const experimentActive = ref('day')
 const maintainActive = ref('levelOne')
-const repairConfig = ref({
-  data: [55],
-  shape: 'round'
-})
 
 const clickExperiment = (value) => {
   experimentActive.value = value
@@ -56,7 +52,6 @@ const clickMaintain = (value) => {
 }
 // echarts
 const experimentOption = ref({
-  color: ['#00B09C', '#93cc79', '#f9c761', '#ec6468', '#18a3a0'],
   tooltip: {
     trigger: 'axis'
   },
@@ -123,7 +118,7 @@ const experimentOption = ref({
     {
       type: 'pictorialBar', //pictorialBar(象形柱图)
       symbolSize: [14, 8], //椭圆的大小[宽，高]
-      symbolOffset: [0.5, -4], //图形偏移[x轴，y轴]，不确定的话，可以微调，本实例x轴叠加了柱状之间的间距[-7+(间距7/2),y轴]
+      symbolOffset: [0, -4], //图形偏移[x轴，y轴]，不确定的话，可以微调，本实例x轴叠加了柱状之间的间距[-7+(间距7/2),y轴]
       z: 12, //图形的层级，控制图形的前后顺序，z值小的图形会被z值大的图形覆盖
       symbolPosition: 'end', //椭圆位置，默认'start'，在最底下，end是最上面
       itemStyle: {
@@ -155,7 +150,7 @@ const experimentOption = ref({
     {
       type: 'pictorialBar',
       symbolSize: [14, 8],
-      symbolOffset: [0.5, 4],
+      symbolOffset: [0, 4],
       z: 12,
       itemStyle: {
         color: '#0E6EB8'
