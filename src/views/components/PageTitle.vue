@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
+
 const props = defineProps({
   isBack: {
     type: Boolean,
@@ -12,19 +16,23 @@ const props = defineProps({
 })
 
 const newTime = ref('')
+
+setInterval(() => {
+  newTime.value = ref(dayjs().locale('zh-cn').format('YYYY-MM-DD HH:mm:ss'))
+}, 1000)
 </script>
 
 <template>
-  <div class="w-full h-[100px] _title px-11 py-4 box-border flex justify-between mb-7">
-    <span class="block w-75">{{ newTime }}</span>
-    <span class="text-[40px] font-bold">{{ props.title }}</span>
+  <div class="w-full h-25 _title px-25 py-4 box-border flex justify-between mb-7 font-bold">
+    <span class="block w-75 text-6">{{ newTime }}</span>
+    <span class="text-9">{{ props.title }}</span>
     <div class="w-75 flex justify-end">
       <div
         class="_backBtn w-25 h-10 flex justify-center items-center cursor-pointer"
         v-show="props.isBack"
       >
         <img src="@/assets/image/back.png" alt="" class="w-5.5 h-5.5" />
-        <span class="text-5 font-bold">返回</span>
+        <span class="text-5">返回</span>
       </div>
     </div>
   </div>

@@ -13,6 +13,7 @@
     "@iconify/vue": "^4.1.2",
     "@kjgl77/datav-vue3": "^1.7.4",
     "@vueuse/core": "^10.11.0",
+    "autofit.js": "^3.2.2",
     "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.11",

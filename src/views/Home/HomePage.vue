@@ -3,8 +3,9 @@ import { ref } from 'vue'
 import PageTitle from '../components/PageTitle.vue'
 import PageFooter from '../components/PageFooter.vue'
 import ProducePage from './components/ProducePage.vue'
+import EnergyPage from './components/EnergyPage.vue'
 
-const active = ref('produce')
+const active = ref('energy')
 const pageTitle = ref('生产调度模块')
 const setingActiv = (value, title) => {
   active.value = value
@@ -16,8 +17,8 @@ const showMenu = ref<Boolean>(false)
 
 <template>
   <div class="w-full h-full _home flex flex-col relative">
-    <div class="absolute z-2 top-4 right-11 cursor-pointer" @click="showMenu = !showMenu">
-      <img src="@/assets/image/menu.svg" alt="" class="" />
+    <div class="absolute z-2 top-3.5 right-25 cursor-pointer" @click="showMenu = !showMenu">
+      <img src="@/assets/image/menu.svg" alt="" class="w-8 h-8" />
       <div class="absolute w-63 top-15 right-0 z-2 bg-[#172429] border-rd-2" v-if="showMenu">
         <dv-border-box-8>
           <div class="p-4">
@@ -51,7 +52,8 @@ const showMenu = ref<Boolean>(false)
     </div>
     <PageTitle :title="pageTitle" />
     <div class="flex-1 px-8">
-      <ProducePage v-show="active === 'produce'" />
+      <ProducePage v-if="active === 'produce'" />
+      <EnergyPage v-if="active === 'energy'" />
     </div>
     <PageFooter />
   </div>

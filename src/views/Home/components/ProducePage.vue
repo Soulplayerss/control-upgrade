@@ -7,11 +7,19 @@ import { VueDraggable } from 'vue-draggable-plus'
 // echarts按需引入
 import { use, graphic } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { BarChart, PictorialBarChart } from 'echarts/charts'
+import { BarChart, PictorialBarChart, GaugeChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
 import 'echarts/lib/chart/pie'
 import 'echarts/lib/component/tooltip'
-use([CanvasRenderer, BarChart, PictorialBarChart, TooltipComponent, LegendComponent, GridComponent])
+use([
+  CanvasRenderer,
+  BarChart,
+  PictorialBarChart,
+  GaugeChart,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+])
 
 const list1 = ref([
   {
@@ -276,7 +284,7 @@ const maintainOption = ref({
   ]
 })
 
-const maintainPieOption = ref({
+const technicalPieOption = ref({
   tooltip: {
     trigger: 'item',
     show: false
@@ -285,7 +293,7 @@ const maintainPieOption = ref({
     {
       name: '访问来源',
       type: 'pie',
-      radius: ['50%', '70%'], // 设置环形图的内外半径，实现环形效果
+      radius: ['65%', '85%'], // 设置环形图的内外半径，实现环形效果
       avoidLabelOverlap: false,
       label: {
         position: 'center',
@@ -295,7 +303,7 @@ const maintainPieOption = ref({
           return str
         },
         color: '#fff', // 标签的颜色
-        fontSize: 26, // 标签的字体大小
+        fontSize: 30, // 标签的字体大小
         fontWeight: 600
       },
       labelLine: {
@@ -311,60 +319,299 @@ const maintainPieOption = ref({
   ]
 })
 
+// 定义用于图表的颜色数组，colorLine 用于扇区渐变的起始颜色，colorLegend 用于渐变的结束颜色
+const maintainPieLine = ['#FFC41C', 'rgba(0,0,0,0)']
+const maintainPieLegend = ['#FFC41C', 'rgba(0,0,0,0)']
+const maintainPieOption = ref({
+  tooltip: {
+    trigger: 'item',
+    show: false
+  },
+  series: [
+    {
+      name: '内边框', // 系列名称
+      type: 'pie', // 图表类型为 'pie'，即饼图
+      clockWise: true, // 顺时针显示
+      silent: true, // 关闭鼠标悬浮提示
+      animation: true, // 开启动画效果
+      radius: ['60%'], // 边框半径百分比
+      labelLine: {
+        normal: {
+          show: false // 不显示标签的连线
+        }
+      },
+      data: [
+        // 数据项
+        {
+          value: 1, // 数据值
+          itemStyle: {
+            color: 'rgba(19, 29, 67, 0.5)'
+            // // 样式配置
+            // normal: {
+            //   // 普通状态下的样式
+            //   borderWidth: 10, // 边框宽度
+            //   borderColor: '#2F4F4F' // 边框颜色
+            // }
+          }
+        }
+      ]
+    },
+    {
+      name: '',
+      type: 'pie',
+      radius: ['60%', '75%'], // 设置环形图的内外半径，实现环形效果
+      avoidLabelOverlap: false,
+      itemStyle: {
+        // 图表项的样式
+        // borderRadius: 10,     // 扇区圆角（这里被注释掉了）
+        borderColor: '#fff', // 扇区边框颜色
+        borderWidth: 2, // 扇区边框宽度
+        normal: {
+          // 普通状态下的样式
+          // 为扇区设置渐变色
+          color: function (params) {
+            // 使用回调函数根据数据项的索引设置渐变色
+            return {
+              type: 'linear', // 渐变类型
+              x: 0, // 渐变起点 x 坐标
+              y: 0, // 渐变起点 y 坐标
+              x2: 1, // 渐变终点 x 坐标
+              y2: 1, // 渐变终点 y 坐标
+              colorStops: [
+                // 颜色停止点数组
+                {
+                  offset: 0, // 开始位置
+                  color: maintainPieLine[params.dataIndex % maintainPieLine.length] // 开始颜色
+                },
+                {
+                  offset: 1, // 结束位置
+                  color: maintainPieLegend[params.dataIndex % maintainPieLegend.length] // 结束颜色
+                }
+              ],
+              globalCoord: false // 是否使用全局坐标
+            }
+          }
+        }
+      },
+      label: {
+        position: 'center',
+        show: true,
+        formatter: function () {
+          let str = '28%'
+          return str
+        },
+        color: '#fff', // 标签的颜色
+        fontSize: 30, // 标签的字体大小
+        fontWeight: 600
+      },
+      labelLine: {
+        normal: {
+          show: false // 不显示标签的连线
+        }
+      },
+      data: [20, 100]
+    }
+  ]
+})
+
 const repairOption = ref({
   series: [
     {
       type: 'liquidFill',
-      data: [
-        0.68,
-        0.5,
-        {
-          // 如果只想给其中某一个波浪，比如最后一个波浪设置透明度以及鼠标移入的透明度
-          value: 0.4,
-          direction: 'left', // 让波浪往不同的方向浮动，比如这里设置往左，未设置的波浪会往右
-          itemStyle: {
-            opacity: 0.6
-          },
-          emphasis: {
-            itemStyle: {
-              opacity: 0.9
-            }
-          }
-        }
-      ],
+      data: [0.3],
       radius: '95%', // 半径
       shape: 'circle', // 改变水球图的形状，比如 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
-      color: ['red', 'blue', 'yellow'], // 修改波浪的颜色，并会自动与 data 中的数据从大到小进行映射，如，red-0.68；blue-0.5；yellow-0.4
-      // itemStyle: { // 设置水球透明度
-      //     opacity: 0.6
-      // },
-      // emphasis: { // 设置鼠标移入波浪后的透明度，不设置该数值，默认跟 itemStyle 中设置的一样，为 0.6
-      //     itemStyle: {
-      //         opacity: 0.9
-      //     }
-      // },
-      // waveAnimation: false, // 让波浪停止绘制，从动态变为静止，该属性最好和 AnimationDuration， AnimationDurationUpdate 一起设置
-      // AnimationDuration: 0,
-      // AnimationDurationUpdate: 0,
+      color: ['#16c0ac'], // 修改波浪的颜色，并会自动与 data 中的数据从大到小进行映射，如，red-0.68；blue-0.5；yellow-0.4
+      itemStyle: {
+        // 设置水球透明度
+        opacity: 0.7
+      },
       amplitude: 10, // 控制波浪的振幅，为 0，怎会变为直线的波纹并且波浪为静止，如果给 10，波纹明显幅度变小，50 则会很陡峭
       backgroundStyle: {
-        color: 'purple', // 修改背景颜色
-        borderWidth: 4, // 修改背景边框宽度
-        borderColor: 'green' // 修改背景边框的颜色
+        color: new graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: '#FFF' }, // 渐变色起始点颜色，透明度为0.1
+          { offset: 1, color: 'rgba(135,218,245, 1)' } // 渐变色结束点颜色，透明度为1
+        ]), // 修改背景颜色
+        borderWidth: 8, // 修改背景边框宽度
+        borderColor: '#4b638e' // 修改背景边框的颜色
       },
       outline: {
         // 修改外层样式
         show: true,
-        borderDistance: 10, // 设置和外层轮廓的间距
+        borderDistance: 4, // 设置和外层轮廓的间距
         itemStyle: {
-          borderWidth: 2, // 设置外层边框宽度
-          borderColor: 'red', // 设置外层边框颜色
+          borderWidth: 8, // 设置外层边框宽度
+          borderColor: '#224057', // 设置外层边框颜色
           shadowBlur: 'none' // 消除外层边框阴影
         }
       }
       // outline: { // 隐藏外层
       //     show: false
       // }
+    }
+  ]
+})
+
+// 定义用于图表的颜色数组，colorLine 用于扇区渐变的起始颜色，colorLegend 用于渐变的结束颜色
+const colorLine = ['#3D9DFB', '#3EFDB0', '#FFC41C', '#FC7242']
+const colorLegend = ['#000A1B', '#061C2C', '#192120', '#0E1728']
+// 初始化数值变量 num，用于累加 legendList 中的所有数值
+const repairPieOption = ref({
+  // 返回环形图的配置对象
+  // 定义图表使用的颜色数组
+  color: colorLine,
+  // 网格配置，用于控制图表元素的位置和间距
+  grid: {
+    left: 20, // 左侧边距
+    right: 20, // 右侧边距
+    top: 20, // 上边距
+    bottom: 20 // 下边距
+  },
+  // 提示框配置，用于设置鼠标悬浮时显示的信息
+  tooltip: {
+    trigger: 'item', // 触发类型为 'item'，即每个扇区
+    formatter: '{b}: {c} ({d}%)' // 格式化字符串，显示名称、数值和百分比
+  },
+  // 用于定义图表的数据和样式
+  series: [
+    // 表示环形图的主要扇区
+    {
+      name: '', // 系列名称
+      type: 'pie', // 图表类型为 'pie'，即饼图
+      radius: ['70%', '92%'], // 饼图的内外半径百分比
+      // center: ['25%', '50%'], // 饼图的中心位置（这里被注释掉了）
+      avoidLabelOverlap: false, // 设置为 false 以允许标签重叠
+      itemStyle: {
+        // 图表项的样式
+        // borderRadius: 10,     // 扇区圆角（这里被注释掉了）
+        borderColor: '#fff', // 扇区边框颜色
+        borderWidth: 2, // 扇区边框宽度
+        normal: {
+          // 普通状态下的样式
+          // 为扇区设置渐变色
+          color: function (params) {
+            // 使用回调函数根据数据项的索引设置渐变色
+            return {
+              type: 'linear', // 渐变类型
+              x: 0, // 渐变起点 x 坐标
+              y: 0, // 渐变起点 y 坐标
+              x2: 1, // 渐变终点 x 坐标
+              y2: 1, // 渐变终点 y 坐标
+              colorStops: [
+                // 颜色停止点数组
+                {
+                  offset: 0, // 开始位置
+                  color: colorLine[params.dataIndex % colorLine.length] // 开始颜色
+                },
+                {
+                  offset: 1, // 结束位置
+                  color: colorLegend[params.dataIndex % colorLegend.length] // 结束颜色
+                }
+              ],
+              globalCoord: false // 是否使用全局坐标
+            }
+          }
+        }
+      },
+      label: {
+        normal: {
+          // 普通状态下的标签
+          show: true, // 显示标签
+          position: 'center', // 标签位置为 'center'，即图表中心
+          color: '#9A9EBA', // 标签字体颜色
+          formatter: function () {
+            return '43%'
+          },
+          fontSize: 28 // 字号
+        },
+        emphasis: {
+          // 鼠标悬浮时的标签样式
+          show: true // 显示标签
+        },
+        position: 'center' // 标签位置为 'center'
+      },
+      emphasis: {
+        // 鼠标悬浮时的样式
+        label: {
+          // 标签样式
+          show: true, // 显示标签
+          fontSize: 40, // 字号
+          fontWeight: 'bold' // 字重
+        }
+      },
+      labelLine: {
+        normal: {
+          show: false // 不显示标签的连线
+        }
+      },
+      data: [50, 80, 60, 90] // 传入的数据项
+    },
+    // 用于绘制内边框圆，增强视觉效果
+    {
+      type: 'gauge', // 图表类型为 'gauge'，即仪表盘
+      radius: '70%', // 仪表盘半径
+      clockwise: true, // 顺时针显示
+      startAngle: '90', // 开始角度
+      endAngle: '-269.9999', // 结束角度
+      splitNumber: 90, // 分割段数
+      pointer: {
+        // 指针配置
+        show: false // 不显示指针
+      },
+      axisLine: {
+        // 坐标轴线配置
+        show: false // 不显示坐标轴线
+      },
+      axisTick: {
+        // 坐标轴刻度配置
+        show: false // 不显示坐标轴刻度
+      },
+      tooltip: {
+        // 提示框配置
+        show: false // 不显示提示框
+      },
+      splitLine: {
+        // 分隔线配置
+        show: true, // 显示分隔线
+        length: 10, // 分隔线长度
+        lineStyle: {
+          // 分隔线样式
+          color: 'rgba(52, 185, 232, .5)', // 分隔线颜色
+          width: 1 // 分隔线宽度
+        }
+      },
+      axisLabel: {
+        // 坐标轴标签配置
+        show: false // 不显示坐标轴标签
+      }
+    },
+    // 用于绘制外边框圆，增强视觉效果
+    {
+      name: '外边框', // 系列名称
+      type: 'pie', // 图表类型为 'pie'，即饼图
+      clockWise: true, // 顺时针显示
+      silent: true, // 关闭鼠标悬浮提示
+      animation: true, // 开启动画效果
+      radius: ['98%', '100%'], // 边框半径百分比
+      labelLine: {
+        normal: {
+          show: false // 不显示标签的连线
+        }
+      },
+      data: [
+        // 数据项
+        {
+          value: 1, // 数据值
+          itemStyle: {
+            // 样式配置
+            normal: {
+              // 普通状态下的样式
+              borderWidth: 1, // 边框宽度
+              borderColor: '#DFE1E6' // 边框颜色
+            }
+          }
+        }
+      ]
     }
   ]
 })
@@ -382,7 +629,7 @@ const repairOption = ref({
       <div v-for="item in list1" :key="item.id" class="cursor-pointer _draggableItem border-rd-2">
         <dv-border-box-1>
           <div class="w-full h-full box-border p-4 flex flex-col">
-            <div class="flex justify-between mt-6">
+            <div class="xl:flex justify-between mt-6">
               <dv-decoration-11 style="width: 200px; height: 60px">{{
                 item.name
               }}</dv-decoration-11>
@@ -410,8 +657,8 @@ const repairOption = ref({
                 </div>
               </div>
               <div class="relative flex flex-justify-end pr-20" v-if="item.name === '保养任务模块'">
-                <div class="absolute bottom-0 right-4 w-[330px] h-[20px]">
-                  <dv-decoration-8 :reverse="true" style="width: 330px; height: 30px" />
+                <div class="absolute bottom-0 right-4 w-[300px] h-[20px]">
+                  <dv-decoration-8 :reverse="true" style="width: 300px; height: 30px" />
                 </div>
                 <div class="_chengeBtn mr-4">
                   <dv-border-box-7
@@ -420,7 +667,7 @@ const repairOption = ref({
                     >一级保养</dv-border-box-7
                   >
                 </div>
-                <div class="_chengeBtn mr-4">
+                <div class="_chengeBtn">
                   <dv-border-box-7
                     @click="clickMaintain('levelTwo')"
                     :backgroundColor="maintainActive === 'levelTwo' ? '#00327D' : '#284a7d'"
@@ -437,9 +684,9 @@ const repairOption = ref({
                 class="w-[30%] h-full ml-4 _experimentRight flex flex-col gap-5 py-8 px-4 box-border"
               >
                 <div
-                  class="flex-1 flex flex-col justify-center items-start border-rd-2 box-border px-6"
+                  class="flex-1 flex flex-col justify-center items-start border-rd-2 box-border px-6 text-6"
                 >
-                  <span class="text-5 block mb-4 text-7">日实验总量</span>
+                  <span class="text-5 block mb-4">日实验总量</span>
                   <div class="flex items-centar">
                     <img src="@/assets/image/day-total.svg" alt="" class="mr-4 w-12 h-12" />
                     <span class="text-8 color-[#12CCB4]">20</span>
@@ -448,7 +695,7 @@ const repairOption = ref({
                 <div
                   class="flex-1 flex flex-col justify-center items-start border-rd-2 box-border px-6"
                 >
-                  <span class="text-5 block mb-4 text-7">周实验总量</span>
+                  <span class="text-5 block mb-4">周实验总量</span>
                   <div class="flex items-centar">
                     <img src="@/assets/image/week-total.svg" alt="" class="mr-4 w-12 h-12" />
                     <span class="text-8 color-[#12CCB4]">20</span>
@@ -460,42 +707,44 @@ const repairOption = ref({
               <div class="flex-1 h-full">
                 <v-chart autoresize :option="maintainOption" />
               </div>
-              <div class="w-[30%] h-full ml-4 box-border relative">
-                <v-chart autoresize :option="maintainPieOption" />
-                <div class="w-full box-border text-center absolute bottom-10 text-6">{{
+              <div class="w-[30%] h-full ml-4 box-border relative flex flex-col">
+                <div class="flex-1">
+                  <v-chart autoresize :option="maintainPieOption" />
+                </div>
+                <div class="w-full box-border text-center text-5.5 mb-10">{{
                   maintainActive === 'levelOne' ? '一级完成率' : '二级完成率'
                 }}</div>
               </div>
             </div>
-            <div v-if="item.name === '技改任务模块'" class="flex-1 flex box-border">
-              <div class="w-[25%] h-full box-border relative">
-                <v-chart autoresize :option="maintainPieOption" />
-                <div class="w-full box-border text-center absolute bottom-10 text-4.5"
-                  >第一季度任务数600</div
-                >
+            <div v-if="item.name === '技改任务模块'" class="flex-1 flex box-border text-5.5">
+              <div class="w-[25%] h-full box-border relative flex flex-col">
+                <div class="flex-1">
+                  <v-chart autoresize :option="technicalPieOption" />
+                </div>
+                <div class="w-full box-border text-center h-20 leading-20">第一季度任务数600</div>
               </div>
-              <div class="w-[25%] h-full box-border relative">
-                <v-chart autoresize :option="maintainPieOption" />
-                <div class="w-full box-border text-center absolute bottom-10 text-4.5"
-                  >第二季度任务数600</div
-                >
+              <div class="w-[25%] h-full box-border relative flex flex-col">
+                <div class="flex-1">
+                  <v-chart autoresize :option="technicalPieOption" />
+                </div>
+                <div class="w-full box-border text-center h-20 leading-20">第二季度任务数600</div>
               </div>
-              <div class="w-[25%] h-full box-border relative">
-                <v-chart autoresize :option="maintainPieOption" />
-                <div class="w-full box-border text-center absolute bottom-10 text-4.5"
-                  >第三季度任务数600</div
-                >
+              <div class="w-[25%] h-full box-border relative flex flex-col">
+                <div class="flex-1">
+                  <v-chart autoresize :option="technicalPieOption" />
+                </div>
+                <div class="w-full box-border text-center h-20 leading-20">第三季度任务数600</div>
               </div>
-              <div class="w-[25%] h-full box-border relative">
-                <v-chart autoresize :option="maintainPieOption" />
-                <div class="w-full box-border text-center absolute bottom-10 text-4.5"
-                  >第四季度任务数600</div
-                >
+              <div class="w-[25%] h-full box-border relative flex flex-col">
+                <div class="flex-1">
+                  <v-chart autoresize :option="technicalPieOption" />
+                </div>
+                <div class="w-full box-border text-center h-20 leading-20">第四季度任务数600</div>
               </div>
             </div>
             <div
               v-if="item.name === '维修任务模块'"
-              class="flex-1 gap-5 py-7.5 px-4 flex box-border"
+              class="flex-1 gap-5 py-7.5 px-4 flex box-border text-5.5"
             >
               <div
                 class="_repairItem h-full border-rd-2 box-border p-4 flex flex-col justify-center items-center"
@@ -503,7 +752,7 @@ const repairOption = ref({
                 <div class="flex-1 w-full box-border"
                   ><v-chart autoresize :option="repairOption"
                 /></div>
-                <span class="text-5">本周临时维修数</span>
+                <span class="block mt-5">本周临时维修数</span>
               </div>
               <div
                 class="_repairItem h-full border-rd-2 box-border p-4 flex flex-col justify-center items-center"
@@ -511,15 +760,15 @@ const repairOption = ref({
                 <div class="flex-1 w-full box-border"
                   ><v-chart autoresize :option="repairOption"
                 /></div>
-                <span class="text-5">本月大设任务数</span>
+                <span class="block mt-5">本月大设任务数</span>
               </div>
               <div
                 class="_repairItem h-full border-rd-2 box-border p-4 flex flex-col justify-center items-center"
               >
                 <div class="flex-1 w-full box-border"
-                  ><v-chart autoresize :option="maintainPieOption"
+                  ><v-chart autoresize :option="repairPieOption"
                 /></div>
-                <span class="text-5">年度大设任务完成数</span>
+                <span class="block mt-5">年度大设任务完成率</span>
               </div>
             </div>
           </div>
@@ -531,7 +780,7 @@ const repairOption = ref({
 
 <style lang="less" scoped>
 ._draggableItem {
-  width: calc((100% - 84px) / 2);
+  width: calc((100% - 20px) / 2);
   height: calc((100% - 20px) / 2);
   background-color: rgba(40, 51, 52, 0.8);
   overflow: hidden;

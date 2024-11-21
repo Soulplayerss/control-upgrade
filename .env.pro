@@ -2,10 +2,7 @@
 VITE_NODE_ENV=pro
 
 # 接口前缀
-VITE_API_BASE_PATH=https://gw.hambit.co/api/v1/hambit/hambit-work-order
-
-# 静态资源
-VITE_STATIC_URL = https://static.hambit.io/
+VITE_API_BASE_PATH=https://
 
 # 打包路径
 VITE_BASE_PATH=/
@@ -23,7 +20,7 @@ VITE_SOURCEMAP=false
 VITE_OUT_DIR=dist-pro
 
 # 标题
-VITE_APP_TITLE=WorkSystem
+VITE_APP_TITLE=CONTROL-UPGRADE
 
 # 是否使用在线图标
 VITE_USE_ONLINE_ICON=true
