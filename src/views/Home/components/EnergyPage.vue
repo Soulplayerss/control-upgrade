@@ -31,39 +31,32 @@ use([
 const list1 = ref([
   {
     name: '电能年度消耗量',
-    computedWidth: '0px',
     id: 0
   },
   {
     name: '燃油年度消耗量',
-    computedWidth: '0px',
     id: 1
   },
   {
     name: '天然气年度消耗量',
-    computedWidth: '0px',
     id: 2
   }
 ])
 const list2 = ref([
   {
     name: '电能月度消耗量',
-    computedWidth: '0px',
     id: 0
   },
   {
     name: '天然气月度消耗量',
-    computedWidth: '0px',
     id: 1
   },
   {
     name: '燃油月度消耗量',
-    computedWidth: '0px',
     id: 2
   },
   {
     name: '油库日库存量',
-    computedWidth: '0px',
     id: 3
   }
 ])

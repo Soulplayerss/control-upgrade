@@ -450,7 +450,6 @@ const repairOption = ref({
 // 定义用于图表的颜色数组，colorLine 用于扇区渐变的起始颜色，colorLegend 用于渐变的结束颜色
 const colorLine = ['#3D9DFB', '#3EFDB0', '#FFC41C', '#FC7242']
 const colorLegend = ['#000A1B', '#061C2C', '#192120', '#0E1728']
-// 初始化数值变量 num，用于累加 legendList 中的所有数值
 const repairPieOption = ref({
   // 返回环形图的配置对象
   // 定义图表使用的颜色数组
@@ -622,7 +621,7 @@ const repairPieOption = ref({
       group="people"
     >
       <div v-for="item in list1" :key="item.id" class="cursor-pointer _draggableItem border-rd-2">
-        <dv-border-box-1>
+        <dv-border-box-1 :color="['#3a708a']">
           <div class="w-full h-full box-border p-4 flex flex-col">
             <div class="xl:flex justify-between mt-6">
               <dv-decoration-11 style="width: 200px; height: 60px">{{

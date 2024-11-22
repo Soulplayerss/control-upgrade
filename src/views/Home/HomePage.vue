@@ -4,8 +4,9 @@ import PageTitle from '../components/PageTitle.vue'
 import PageFooter from '../components/PageFooter.vue'
 import ProducePage from './components/ProducePage.vue'
 import EnergyPage from './components/EnergyPage.vue'
+import DevicePage from './components/DevicePage.vue'
 
-const active = ref('energy')
+const active = ref('produce')
 const pageTitle = ref('生产调度模块')
 const setingActiv = (value, title) => {
   active.value = value
@@ -54,6 +55,7 @@ const showMenu = ref<Boolean>(false)
     <div class="flex-1 px-8">
       <ProducePage v-if="active === 'produce'" />
       <EnergyPage v-if="active === 'energy'" />
+      <DevicePage v-if="active === 'device'" />
     </div>
     <PageFooter />
   </div>
