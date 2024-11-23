@@ -294,7 +294,7 @@ const technicalPieOption = ref({
         position: 'center',
         show: true,
         formatter: function () {
-          let str = '28%'
+          let str = '30%'
           return str
         },
         color: '#fff', // 标签的颜色

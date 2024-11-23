@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
@@ -15,7 +15,18 @@ const props = defineProps({
   }
 })
 
-const newTime = ref('')
+const emit = defineEmits(['back-page'])
+const showBack = ref<Boolean>(false)
+
+watch(props, (newValue) => {
+  showBack.value = !newValue.isBack
+})
+
+const back = () => {
+  emit('back-page')
+}
+
+const newTime = ref<any>('')
 
 setInterval(() => {
   newTime.value = ref(dayjs().locale('zh-cn').format('YYYY-MM-DD HH:mm:ss'))
@@ -29,7 +40,8 @@ setInterval(() => {
     <div class="w-75 flex justify-end">
       <div
         class="_backBtn w-25 h-10 flex justify-center items-center cursor-pointer"
-        v-show="props.isBack"
+        v-show="showBack"
+        @click="back"
       >
         <img src="@/assets/image/back.png" alt="" class="w-5.5 h-5.5" />
         <span class="text-5">返回</span>

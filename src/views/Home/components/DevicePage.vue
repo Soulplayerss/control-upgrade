@@ -1,7 +1,15 @@
 <template>
-  <div class="w-full h-full flex gap-5">
+  <div class="w-full h-full" v-if="showTable">
+    <TablePage :tableTitle="tableTitle" />
+  </div>
+  <div class="w-full h-full flex gap-5" v-else>
     <div class="w-12.5% h-full flex flex-col gap-5 min-w-45">
-      <div v-for="item in leftBtns" :key="item" class="w-full h-full _btnItem flex-1">
+      <div
+        v-for="item in leftBtns"
+        :key="item"
+        class="w-full h-full _btnItem flex-1"
+        @click="toTable(item)"
+      >
         <dv-border-box-2
           ><span
             class="block w-full h-full flex items-center justify-center text-center box-border p-4"
@@ -68,14 +76,19 @@
                   :titlecolor="'#FFC41C'"
                 />
               </div>
-              <span class="leading-6">{{ item }}</span>
+              <span class="text-center block h-[20%]">{{ item }}</span>
             </div>
           </div>
         </dv-border-box-11>
       </div>
     </div>
     <div class="w-12.5% h-full flex flex-col gap-5 min-w-45">
-      <div v-for="item in rightBtns" :key="item" class="w-full h-full _btnItem flex-1">
+      <div
+        v-for="item in rightBtns"
+        :key="item"
+        class="w-full h-full _btnItem flex-1"
+        @click="toTable(item)"
+      >
         <dv-border-box-2
           ><span
             class="block w-full h-full flex items-center justify-center text-center box-border p-4"
@@ -88,14 +101,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import VChart from 'vue-echarts'
 import 'echarts-liquidfill'
 import { VueDraggable } from 'vue-draggable-plus'
-import PieOptionPage from './PieOptionPage.vue'
+import PieOptionPage from '../../components/PieOptionPage.vue'
+import TablePage from '../../components/TablePage.vue'
+
+const emit = defineEmits(['to-table'])
 
 // echarts按需引入
-import { use, graphic } from 'echarts/core'
+import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart, PictorialBarChart, GaugeChart, LineChart } from 'echarts/charts'
 import {
@@ -117,6 +133,26 @@ use([
   TitleComponent,
   GridComponent
 ])
+
+const props = defineProps({
+  showMenu: {
+    type: Boolean,
+    default: () => false
+  }
+})
+
+const showTable = ref<Boolean>(false)
+
+watch(props, (newValue) => {
+  showTable.value = !newValue.showMenu
+})
+
+const tableTitle = ref<string>('')
+const toTable = (name) => {
+  showTable.value = true
+  tableTitle.value = name
+  emit('to-table', name)
+}
 
 const leftBtns = ref([
   '2001大供气系统',
