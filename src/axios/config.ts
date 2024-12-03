@@ -1,6 +1,5 @@
 import { AxiosResponse, InternalAxiosRequestConfig } from './types'
 import qs from 'qs'
-import { objToFormData } from '@/utils'
 import { ElMessage } from 'element-plus'
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
@@ -14,7 +13,6 @@ const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
     config.headers['Content-Type'] === 'multipart/form-data' &&
     !(config.data instanceof FormData)
   ) {
-    config.data = objToFormData(config.data)
   }
   if (config.method === 'get' && config.params) {
     let url = config.url as string
@@ -36,7 +34,7 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
   if (response?.config?.responseType === 'blob') {
     // 如果是文件流，直接过
     return response
-  } else if (response.data.code === '200') {
+  } else if (response.data.code === 200) {
     return response.data
   } else {
     ElMessage.error(response?.data?.msg)

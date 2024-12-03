@@ -6,8 +6,8 @@ import ProducePage from './components/ProducePage.vue'
 import EnergyPage from './components/EnergyPage.vue'
 import DevicePage from './components/DevicePage.vue'
 
-const active = ref('device')
-const pageTitle = ref('设备管理模块')
+const active = ref('produce')
+const pageTitle = ref('生产调度模块')
 const setingActiv = (value, title) => {
   active.value = value
   pageTitle.value = title

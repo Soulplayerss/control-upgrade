@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import VChart from 'vue-echarts'
 import 'echarts-liquidfill'
 import { VueDraggable } from 'vue-draggable-plus'
+import { getPlanMaintenance } from '@/api/index.ts'
 
 // echarts按需引入
 import { use, graphic } from 'echarts/core'
@@ -11,6 +12,8 @@ import { BarChart, PictorialBarChart, GaugeChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
 import 'echarts/lib/chart/pie'
 import 'echarts/lib/component/tooltip'
+import * as echarts from 'echarts'
+
 use([
   CanvasRenderer,
   BarChart,
@@ -21,6 +24,7 @@ use([
   GridComponent
 ])
 
+// 页面模块
 const list1 = ref([
   {
     name: '实验计划模块',
@@ -40,17 +44,324 @@ const list1 = ref([
   }
 ])
 
-const experimentActive = ref('day')
+//保养任务板块
+const planMaintenanceData = ref<any>({
+  oneCompleteRate: 0,
+  twoCompleteRate: 0,
+  onexAxis: [],
+  twoxAxis: [],
+  oneData: [],
+  twoData: []
+})
+// ----获取数据
+const GetPlanMaintenance = () => {
+  getPlanMaintenance().then((res) => {
+    if (res && res.data) {
+      planMaintenanceData.value.oneCompleteRate = res.data.oneCompleteRate
+      planMaintenanceData.value.twoCompleteRate = res.data.twoCompleteRate
+      for (let key in res.data.one) {
+        if (res.data.one.hasOwnProperty(key)) {
+          planMaintenanceData.value.onexAxis.push(key)
+          planMaintenanceData.value.oneData.push(res.data.one[key])
+        }
+      }
+      for (let key in res.data.two) {
+        if (res.data.two.hasOwnProperty(key)) {
+          planMaintenanceData.value.twoxAxis.push(key)
+          planMaintenanceData.value.twoData.push(res.data.two[key])
+        }
+      }
+      //初始化图表
+      initBarChart(planMaintenanceData.value.onexAxis, planMaintenanceData.value.oneData)
+      initPieChart(planMaintenanceData.value.oneCompleteRate)
+    }
+  })
+}
+// ----改变状态
 const maintainActive = ref('levelOne')
+const clickMaintain = (value) => {
+  maintainActive.value = value
+  if (value === 'levelOne') {
+    initBarChart(planMaintenanceData.value.onexAxis, planMaintenanceData.value.oneData)
+    initPieChart(planMaintenanceData.value.oneCompleteRate)
+  } else {
+    initBarChart(planMaintenanceData.value.twoxAxis, planMaintenanceData.value.twoData)
+    initPieChart(planMaintenanceData.value.twoCompleteRate)
+  }
+}
+//----初始化柱状图图表
+const initBarChart = (xData, data) => {
+  let option = {
+    tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      show: false,
+      textStyle: {
+        color: '#ffffff'
+      },
+      icon: 'rect',
+      itemWidth: 20,
+      itemHeight: 3
+    },
+    xAxis: {
+      data: xData,
+      type: 'category',
+      nameLocation: 'middle',
+      //刻度线
+      axisLine: {
+        lineStyle: {
+          color: '#cbcbcb'
+        }
+      },
+      axisTick: {
+        lineStyle: {
+          color: '#cbcbcb'
+        },
+        alignWithLabel: true
+      },
+      axisLabel: {
+        color: '#999999'
+      },
+      // 鼠标悬浮阴影
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    yAxis: {
+      scale: true,
+      splitLine: {
+        lineStyle: {
+          color: 'rgba(30,163,255,0.3)'
+        }
+      },
+      axisTick: {
+        show: false
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#cbcbcb'
+        }
+      },
+      axisLabel: {
+        color: '#999999'
+      }
+    },
+    grid: {
+      top: '15%',
+      left: '2%',
+      right: '2%',
+      bottom: '15%',
+      containLabel: true
+    },
+    series: [
+      {
+        name: '',
+        data: data,
+        type: 'bar',
+        barWidth: 20,
+        // barGap: '50%', //柱状图间距，此处为14*50%=7
+        itemStyle: {
+          // 图形样式
+          color: new graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0, // 0%处的颜色
+              color: 'rgba(21, 147, 197,1)'
+            },
+            {
+              offset: 1, // 100%处的颜色
+              color: 'rgba(12, 97, 162,1)'
+            }
+          ])
+        }
+      }
+    ]
+  }
+  const chart = echarts.init(document.getElementById('maintenanceBarChartDom'))
+  chart.setOption(option)
+}
+// ----扇形图
+const maintainPieLine = ['#FFC41C', 'rgba(0,0,0,0)']
+const maintainPieLegend = ['#FFC41C', 'rgba(0,0,0,0)']
 
+//----初始化扇形图图表
+const initPieChart = (data) => {
+  let option = {
+    tooltip: {
+      trigger: 'item',
+      show: false
+    },
+    series: [
+      {
+        name: '内边框', // 系列名称
+        type: 'pie', // 图表类型为 'pie'，即饼图
+        clockWise: true, // 顺时针显示
+        silent: true, // 关闭鼠标悬浮提示
+        animation: true, // 开启动画效果
+        radius: ['60%'], // 边框半径百分比
+        labelLine: {
+          normal: {
+            show: false // 不显示标签的连线
+          }
+        },
+        data: [
+          // 数据项
+          {
+            value: 1, // 数据值
+            itemStyle: {
+              color: 'rgba(19, 29, 67, 0.5)'
+              // // 样式配置
+              // normal: {
+              //   // 普通状态下的样式
+              //   borderWidth: 10, // 边框宽度
+              //   borderColor: '#2F4F4F' // 边框颜色
+              // }
+            }
+          }
+        ]
+      },
+      {
+        name: '',
+        type: 'pie',
+        radius: ['60%', '75%'], // 设置环形图的内外半径，实现环形效果
+        avoidLabelOverlap: false,
+        itemStyle: {
+          // 图表项的样式
+          // borderRadius: 10,     // 扇区圆角（这里被注释掉了）
+          borderColor: '#fff', // 扇区边框颜色
+          borderWidth: 2, // 扇区边框宽度
+          normal: {
+            // 普通状态下的样式
+            // 为扇区设置渐变色
+            color: function (params) {
+              // 使用回调函数根据数据项的索引设置渐变色
+              return {
+                type: 'linear', // 渐变类型
+                x: 0, // 渐变起点 x 坐标
+                y: 0, // 渐变起点 y 坐标
+                x2: 1, // 渐变终点 x 坐标
+                y2: 1, // 渐变终点 y 坐标
+                colorStops: [
+                  // 颜色停止点数组
+                  {
+                    offset: 0, // 开始位置
+                    color: maintainPieLine[params.dataIndex % maintainPieLine.length] // 开始颜色
+                  },
+                  {
+                    offset: 1, // 结束位置
+                    color: maintainPieLegend[params.dataIndex % maintainPieLegend.length] // 结束颜色
+                  }
+                ],
+                globalCoord: false // 是否使用全局坐标
+              }
+            }
+          }
+        },
+        label: {
+          position: 'center',
+          show: true,
+          formatter: function () {
+            let str = `${data} %`
+            return str
+          },
+          color: '#fff', // 标签的颜色
+          fontSize: 30, // 标签的字体大小
+          fontWeight: 600
+        },
+        labelLine: {
+          normal: {
+            show: false // 不显示标签的连线
+          }
+        },
+        data: [Number(data), 100]
+      }
+    ]
+  }
+  const chart = echarts.init(document.getElementById('maintenancePieChartDom'))
+  chart.setOption(option)
+}
+
+//保养任务板块
+const planTechnical = ref<any>([
+  {
+    name: '第一季度任务数600',
+    value: 30,
+    total: 100
+  },
+  {
+    name: '第二季度任务数600',
+    value: 16,
+    total: 100
+  },
+  {
+    name: '第三季度任务数600',
+    value: 58,
+    total: 100
+  },
+  {
+    name: '第四季度任务数600',
+    value: 95,
+    total: 100
+  }
+])
+// ----获取数据
+const GetPlanTechnical = () => {
+  initPlanTechnicalPieChart()
+  // getPlanTechnical().then((res) => {
+  //   if (res && res.data) {
+  //     for (let key in res.data) {
+  //       planTechnical.value.push({ name: key, value: res.data[key] })
+  //     }
+  //     //初始化图表
+  //   }
+  // })
+}
+
+const initPlanTechnicalPieChart = () => {
+  planTechnical.value.forEach((element, index) => {
+    const chart = echarts.init(document.getElementById(`planTechnicalPieChartDom${index}`))
+    chart.setOption({
+      tooltip: {
+        trigger: 'item',
+        show: false
+      },
+      series: [
+        {
+          name: '访问来源',
+          type: 'pie',
+          radius: ['65%', '85%'], // 设置环形图的内外半径，实现环形效果
+          avoidLabelOverlap: false,
+          label: {
+            position: 'center',
+            show: true,
+            formatter: function () {
+              let str = Math.round((element.value / element.total) * 100) + '%'
+              return str
+            },
+            color: '#fff', // 标签的颜色
+            fontSize: 30, // 标签的字体大小
+            fontWeight: 600
+          },
+          labelLine: {
+            normal: {
+              show: false // 不显示标签的连线
+            }
+          },
+          data: [
+            { value: 100, name: '' },
+            { value: element.value, name: '' }
+          ]
+        }
+      ]
+    })
+  })
+}
+
+const experimentActive = ref('day')
 const clickExperiment = (value) => {
   experimentActive.value = value
 }
 
-const clickMaintain = (value) => {
-  maintainActive.value = value
-}
-// echarts
 const experimentOption = ref({
   tooltip: {
     trigger: 'axis'
@@ -156,255 +467,6 @@ const experimentOption = ref({
         color: '#0E6EB8'
       },
       data: [54, 43.98, 31.03, 43.23, 87.19, 47.52, 35.9, 15.68, 89.51, 72.39, 76.73, 91.71]
-    }
-  ]
-})
-
-const maintainOption = ref({
-  color: ['#00B09C', '#93cc79', '#f9c761', '#ec6468', '#18a3a0'],
-  tooltip: {
-    trigger: 'axis'
-  },
-  legend: {
-    textStyle: {
-      color: '#ffffff'
-    },
-    icon: 'rect',
-    itemWidth: 14,
-    itemHeight: 3
-  },
-  xAxis: {
-    data: [
-      '一月',
-      '二月',
-      '三月',
-      '四月',
-      '五月',
-      '六月',
-      '七月',
-      '八月',
-      '九月',
-      '十月',
-      '十一月',
-      '十二月'
-    ],
-    type: 'category',
-    nameLocation: 'middle',
-    //刻度线
-    axisLine: {
-      lineStyle: {
-        color: '#cbcbcb'
-      }
-    },
-    axisTick: {
-      lineStyle: {
-        color: '#cbcbcb'
-      },
-      alignWithLabel: true
-    },
-    axisLabel: {
-      color: '#999999'
-    },
-    // 鼠标悬浮阴影
-    axisPointer: {
-      type: 'shadow'
-    }
-  },
-  yAxis: {
-    scale: true,
-    splitLine: {
-      lineStyle: {
-        color: 'rgba(30,163,255,0.3)'
-      }
-    },
-    axisTick: {
-      show: false
-    },
-    axisLine: {
-      lineStyle: {
-        color: '#cbcbcb'
-      }
-    },
-    axisLabel: {
-      color: '#999999'
-    }
-  },
-  grid: {
-    top: '15%',
-    left: '2%',
-    right: '2%',
-    bottom: '15%',
-    containLabel: true
-  },
-  series: [
-    {
-      name: '总量',
-      data: [54, 43.98, 31.03, 43.23, 87.19, 47.52, 35.9, 15.68, 89.51, 72.39, 76.73, 91.71],
-      type: 'bar',
-      barWidth: 14,
-      barGap: '50%', //柱状图间距，此处为14*50%=7
-      itemStyle: {
-        // 图形样式
-        color: new graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0, // 0%处的颜色
-            color: 'rgba(21, 147, 197,1)'
-          },
-          {
-            offset: 1, // 100%处的颜色
-            color: 'rgba(12, 97, 162,1)'
-          }
-        ])
-      }
-    },
-    {
-      name: '完成量',
-      data: [31.09, 12.82, 52.43, 4.5, 19.18, 54.36, 17.92, 5.26, 30.49, 1.05, 17.54, 16.55],
-      type: 'bar',
-      barWidth: 14,
-      itemStyle: {
-        // 图形样式
-        color: new graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0, // 0%处的颜色
-            color: 'rgba(42, 181, 222,1)'
-          },
-          {
-            offset: 1, // 100%处的颜色
-            color: 'rgba(23, 167, 205,1)'
-          }
-        ])
-      }
-    }
-  ]
-})
-
-const technicalPieOption = ref({
-  tooltip: {
-    trigger: 'item',
-    show: false
-  },
-  series: [
-    {
-      name: '访问来源',
-      type: 'pie',
-      radius: ['65%', '85%'], // 设置环形图的内外半径，实现环形效果
-      avoidLabelOverlap: false,
-      label: {
-        position: 'center',
-        show: true,
-        formatter: function () {
-          let str = '30%'
-          return str
-        },
-        color: '#fff', // 标签的颜色
-        fontSize: 30, // 标签的字体大小
-        fontWeight: 600
-      },
-      labelLine: {
-        normal: {
-          show: false // 不显示标签的连线
-        }
-      },
-      data: [
-        { value: 335, name: '直接访问' },
-        { value: 70, name: '邮件营销' }
-      ]
-    }
-  ]
-})
-
-// 定义用于图表的颜色数组，colorLine 用于扇区渐变的起始颜色，colorLegend 用于渐变的结束颜色
-const maintainPieLine = ['#FFC41C', 'rgba(0,0,0,0)']
-const maintainPieLegend = ['#FFC41C', 'rgba(0,0,0,0)']
-const maintainPieOption = ref({
-  tooltip: {
-    trigger: 'item',
-    show: false
-  },
-  series: [
-    {
-      name: '内边框', // 系列名称
-      type: 'pie', // 图表类型为 'pie'，即饼图
-      clockWise: true, // 顺时针显示
-      silent: true, // 关闭鼠标悬浮提示
-      animation: true, // 开启动画效果
-      radius: ['60%'], // 边框半径百分比
-      labelLine: {
-        normal: {
-          show: false // 不显示标签的连线
-        }
-      },
-      data: [
-        // 数据项
-        {
-          value: 1, // 数据值
-          itemStyle: {
-            color: 'rgba(19, 29, 67, 0.5)'
-            // // 样式配置
-            // normal: {
-            //   // 普通状态下的样式
-            //   borderWidth: 10, // 边框宽度
-            //   borderColor: '#2F4F4F' // 边框颜色
-            // }
-          }
-        }
-      ]
-    },
-    {
-      name: '',
-      type: 'pie',
-      radius: ['60%', '75%'], // 设置环形图的内外半径，实现环形效果
-      avoidLabelOverlap: false,
-      itemStyle: {
-        // 图表项的样式
-        // borderRadius: 10,     // 扇区圆角（这里被注释掉了）
-        borderColor: '#fff', // 扇区边框颜色
-        borderWidth: 2, // 扇区边框宽度
-        normal: {
-          // 普通状态下的样式
-          // 为扇区设置渐变色
-          color: function (params) {
-            // 使用回调函数根据数据项的索引设置渐变色
-            return {
-              type: 'linear', // 渐变类型
-              x: 0, // 渐变起点 x 坐标
-              y: 0, // 渐变起点 y 坐标
-              x2: 1, // 渐变终点 x 坐标
-              y2: 1, // 渐变终点 y 坐标
-              colorStops: [
-                // 颜色停止点数组
-                {
-                  offset: 0, // 开始位置
-                  color: maintainPieLine[params.dataIndex % maintainPieLine.length] // 开始颜色
-                },
-                {
-                  offset: 1, // 结束位置
-                  color: maintainPieLegend[params.dataIndex % maintainPieLegend.length] // 结束颜色
-                }
-              ],
-              globalCoord: false // 是否使用全局坐标
-            }
-          }
-        }
-      },
-      label: {
-        position: 'center',
-        show: true,
-        formatter: function () {
-          let str = '28%'
-          return str
-        },
-        color: '#fff', // 标签的颜色
-        fontSize: 30, // 标签的字体大小
-        fontWeight: 600
-      },
-      labelLine: {
-        normal: {
-          show: false // 不显示标签的连线
-        }
-      },
-      data: [20, 100]
     }
   ]
 })
@@ -609,6 +671,11 @@ const repairPieOption = ref({
     }
   ]
 })
+
+onMounted(() => {
+  GetPlanMaintenance()
+  GetPlanTechnical()
+})
 </script>
 
 <template>
@@ -699,25 +766,30 @@ const repairPieOption = ref({
             </div>
             <div v-if="item.name === '保养任务模块'" class="flex-1 flex box-border">
               <div class="flex-1 h-full">
-                <v-chart autoresize :option="maintainOption" />
+                <div class="w-full h-full" id="maintenanceBarChartDom"></div>
               </div>
               <div class="w-[30%] h-full ml-4 box-border relative flex flex-col">
                 <div class="flex-1">
-                  <v-chart autoresize :option="maintainPieOption" />
+                  <div class="w-full h-full" id="maintenancePieChartDom"></div>
                 </div>
-                <div class="w-full box-border text-center text-5.5 mb-10">{{
+                <div class="w-full box-border text-center text-5.5 mb-20">{{
                   maintainActive === 'levelOne' ? '一级完成率' : '二级完成率'
                 }}</div>
               </div>
             </div>
             <div v-if="item.name === '技改任务模块'" class="flex-1 flex box-border text-5.5">
-              <div class="w-[25%] h-full box-border relative flex flex-col">
+              <div
+                class="w-[25%] h-full box-border relative flex flex-col"
+                v-for="(items, index) in planTechnical"
+                :key="items.name"
+              >
                 <div class="flex-1">
-                  <v-chart autoresize :option="technicalPieOption" />
+                  <div class="w-full h-full" :id="`planTechnicalPieChartDom${index}`"></div>
+                  <!-- <v-chart autoresize :option="technicalPieOption" /> -->
                 </div>
-                <div class="w-full box-border text-center h-20 leading-20">第一季度任务数600</div>
+                <div class="w-full box-border text-center h-20 leading-20">{{ items.name }}</div>
               </div>
-              <div class="w-[25%] h-full box-border relative flex flex-col">
+              <!-- <div class="w-[25%] h-full box-border relative flex flex-col">
                 <div class="flex-1">
                   <v-chart autoresize :option="technicalPieOption" />
                 </div>
@@ -734,7 +806,7 @@ const repairPieOption = ref({
                   <v-chart autoresize :option="technicalPieOption" />
                 </div>
                 <div class="w-full box-border text-center h-20 leading-20">第四季度任务数600</div>
-              </div>
+              </div> -->
             </div>
             <div
               v-if="item.name === '维修任务模块'"

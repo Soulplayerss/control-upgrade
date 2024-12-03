@@ -1,8 +1,5 @@
 import service from './service'
 import { AxiosConfig, IResponse } from './types'
-import { useStorage } from '@/hooks/useStorage'
-
-const { getStorage } = useStorage('sessionStorage')
 
 const request = (option: AxiosConfig) => {
   const { url, method, params, data, headers, responseType } = option
@@ -15,8 +12,6 @@ const request = (option: AxiosConfig) => {
     responseType: responseType,
     headers: {
       'Content-Type': 'application/json',
-      source: 'workorder',
-      Token: getStorage('token') ? `Bearer ${getStorage('token')}` : null,
       ...headers
     }
   })

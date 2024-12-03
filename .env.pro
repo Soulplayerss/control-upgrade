@@ -2,7 +2,7 @@
 VITE_NODE_ENV=pro
 
 # 接口前缀
-VITE_API_BASE_PATH=https://
+VITE_API_BASE_PATH=https://8.137.94.117:8081
 
 # 打包路径
 VITE_BASE_PATH=/
