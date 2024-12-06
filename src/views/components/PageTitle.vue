@@ -19,7 +19,7 @@ const emit = defineEmits(['back-page'])
 const showBack = ref<Boolean>(false)
 
 watch(props, (newValue) => {
-  showBack.value = !newValue.isBack
+  showBack.value = newValue.isBack
 })
 
 const back = () => {

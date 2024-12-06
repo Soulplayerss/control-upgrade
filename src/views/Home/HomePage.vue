@@ -66,9 +66,9 @@ const backPage = () => {
         </dv-border-box-8>
       </div>
     </div>
-    <PageTitle :isBack="showMenu" @back-page="backPage" :title="pageTitle" />
+    <PageTitle :isBack="!showMenu" @back-page="backPage" :title="pageTitle" />
     <div class="flex-1 px-8">
-      <ProducePage v-if="active === 'produce'" />
+      <ProducePage @to-table="toTable" :showMenu="showMenu" v-if="active === 'produce'" />
       <EnergyPage v-if="active === 'energy'" />
       <DevicePage @to-table="toTable" :showMenu="showMenu" v-if="active === 'device'" />
     </div>

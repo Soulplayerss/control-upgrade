@@ -1,8 +1,8 @@
 import request from '@/axios'
 
 // 实验计划板块
-export const getPlanExperiment = (params) => {
-  return request.get({ url: '/tplay/screen/plan/experiment', params })
+export const getPlanExperiment = () => {
+  return request.get({ url: '/tplay/screen/plan/experiment' })
 }
 
 // 保养任务板块
@@ -10,9 +10,45 @@ export const getPlanMaintenance = () => {
   return request.get({ url: '/tplay/screen/plan/maintenance' })
 }
 
+// 一级保养详情
+export const getPlanmaintainoneinfoList = (params) => {
+  return request.get({ url: '/tplay/planmaintainoneinfo/planmaintainoneinfoList', params })
+}
+
+// 一级保养类别查询
+export const getOneLevelMaintenanceName = () => {
+  return request.get({ url: '/tplay/screen/plan/oneLevelMaintenanceName' })
+}
+
+// 二级保养详情
+export const getPlanmaintaintwoinfoList = (params) => {
+  return request.get({
+    url: '/tplay/planmaintaintwoinfo/querytplayPlanmaintaintwoinfoList',
+    params
+  })
+}
+
+// 二级保养类别查询
+export const getTwoLevelMaintenanceName = () => {
+  return request.get({ url: '/tplay/screen/plan/twoLevelMaintenanceName' })
+}
+
 // 技改任务板块
 export const getPlanTechnical = () => {
   return request.get({ url: '/tplay/screen/plan/technical' })
+}
+
+// 技改任务详情查询
+export const getPlantechnicalinfoBytaskId = (params) => {
+  return request.get({
+    url: '/tplay/plantechnicalinfo/getPlantechnicalinfoBytaskId',
+    params
+  })
+}
+
+// 技改任务年度查询
+export const getTechnicalYear = () => {
+  return request.get({ url: '/tplay/screen/plan/technicalYear' })
 }
 
 // 维修任务板块
@@ -20,12 +56,17 @@ export const getPlanRepair = () => {
   return request.get({ url: '/tplay/screen/plan/repair' })
 }
 
-// 维修任务板块
+// 本周临时维修任务详情
+export const getPlantEmporaryList = () => {
+  return request.get({ url: '/tplay/plantemporary/list' })
+}
+
+// 设备系统
 export const getSystemTypeList = () => {
   return request.get({ url: '/tplay/screen/equipment/systemTypeList' })
 }
 
-// 维修任务板块
+// 关重设备数量及完好率
 export const getAvailability = () => {
   return request.get({ url: '/tplay/screen/equipment/availability' })
 }
@@ -38,4 +79,48 @@ export const getWorking = () => {
 // 每个子系统设备数量及完好率
 export const getAvailabilityList = () => {
   return request.get({ url: '/tplay/screen/equipment/availabilityList' })
+}
+
+// 设备运行台时数
+export const getRunTimeForYear = () => {
+  return request.get({ url: '/tplay/screen/equipment/runTimeForYear' })
+}
+
+// 年度数据
+export const getElectricityForYear = () => {
+  return request.get({ url: '/tplay/screen/energy/electricityForYear' })
+}
+
+// 月度数据
+export const getElectricityForMonth = () => {
+  return request.get({ url: '/tplay/screen/energy/electricityForMonth' })
+}
+
+// 当前技术状态
+export const getTechnologyStatus = (id) => {
+  return request.get({
+    url: '/tplay/screen/equipment/technologyStatus/' + id
+  })
+}
+
+// 当前使用状态
+export const getUseStatus = (id) => {
+  return request.get({
+    url: '/tplay/screen/equipment/useStatus/' + id
+  })
+}
+
+// 当前运行时长数
+export const getRunTime = (data) => {
+  return request.post({
+    url: '/tplay/screen/equipment/runTime',
+    data
+  })
+}
+
+// 获取每台设备运行详情
+export const getSystem = (id) => {
+  return request.get({
+    url: '/tplay/screen/equipment/getSystem/' + id
+  })
 }

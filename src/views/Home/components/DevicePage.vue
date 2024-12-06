@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full" v-if="showTable">
-    <TablePage :tableTitle="tableTitle" />
+    <TablePage :deviceId="deviceId" :tableTitle="tableTitle" />
   </div>
   <div class="w-full h-full flex gap-5" v-else>
     <div class="w-12.5% h-full flex flex-col gap-5 min-w-45">
@@ -84,11 +84,11 @@
               :key="index"
             >
               <div class="flex-1 w-full">
-                <!-- <PieOptionPage
-                  :value="50"
+                <PieOptionPage
+                  :value="item.rate || 0"
                   :color="['#6fbdc3', '#3a708a', '#FFC41C']"
                   :titlecolor="'#FFC41C'"
-                /> -->
+                />
               </div>
               <span class="text-center block h-[20%]">{{ item.name }}</span>
             </div>
@@ -118,9 +118,9 @@
 import { onMounted, ref, watch } from 'vue'
 import 'echarts-liquidfill'
 import { VueDraggable } from 'vue-draggable-plus'
-// import PieOptionPage from '../../components/PieOptionPage.vue'
+import PieOptionPage from '../../components/PieOptionPage.vue'
 import TablePage from '../../components/TablePage.vue'
-import { getSystemTypeList, getAvailability, getWorking, getAvailabilityList } from '@/api/index.ts'
+import { getSystemTypeList, getAvailability, getWorking, getRunTimeForYear } from '@/api/index.ts'
 
 const emit = defineEmits(['to-table'])
 
@@ -160,13 +160,20 @@ const showTable = ref<Boolean>(false)
 
 watch(props, (newValue) => {
   showTable.value = !newValue.showMenu
+  if (!showTable.value) {
+    GetAvailability()
+    GetWorking()
+  }
 })
 
 const tableTitle = ref<string>('')
-const toTable = (name) => {
+const deviceId = ref<any>()
+
+const toTable = (item) => {
+  deviceId.value = item.id
   showTable.value = true
-  tableTitle.value = name
-  emit('to-table', name)
+  tableTitle.value = item.name
+  emit('to-table', item.name)
 }
 
 const draggablelist = ref([
@@ -184,47 +191,50 @@ const draggablelist = ref([
   }
 ])
 
-// ----获取设备系统
+// ----------------------------------------------------------------获取设备系统
 const leftBtns = ref<any>([])
 const rightBtns = ref<any>([])
+const subsystemList = ref<any>([])
 
-const GetSystemTypeList = () => {
-  getSystemTypeList().then((res) => {
+const GetSystemTypeList = async () => {
+  await getSystemTypeList().then((res) => {
     let length = res.data.length
     let halfLength = Math.ceil(length / 2)
     leftBtns.value = res.data.slice(0, halfLength)
     rightBtns.value = res.data.slice(halfLength)
+    subsystemList.value = res.data
   })
 }
 
-// ----关重设备数量及完好率
+// ----------------------------------------------------------------关重设备数量及完好率
 const availabilityData = ref<any>({})
 const GetAvailability = () => {
   getAvailability().then((res) => {
     availabilityData.value = res.data
-    initGaugeChart(availabilityData.value.rate)
+    initGaugeChart('availability', availabilityData.value.rate)
   })
 }
 
-// ----关重设备投运数量及投运率
+// -----------------------------------------------------------------关重设备投运数量及投运率
 const workingData = ref<any>({})
 const GetWorking = () => {
   getWorking().then((res) => {
     workingData.value = res.data
-    initGaugeChart(workingData.value.rate)
+    initGaugeChart('working', workingData.value.rate)
   })
 }
 
 // 定义用于图表的颜色数组，colorLine 用于扇区渐变的起始颜色，colorLegend 用于渐变的结束颜色
 const colorLine = ['#3D9DFB', '#3EFDB0', '#FFC41C', '#FC7242']
 const colorLegend = ['#000A1B', '#061C2C', '#192120', '#0E1728']
-const initGaugeChart = (data) => {
+const initGaugeChart = (type, data) => {
   let option = {
     // 返回环形图的配置对象
     // 定义图表使用的颜色数组
     color: colorLine,
     // 提示框配置，用于设置鼠标悬浮时显示的信息
     tooltip: {
+      show: false,
       trigger: 'item', // 触发类型为 'item'，即每个扇区
       formatter: '{b}: {c} ({d}%)' // 格式化字符串，显示名称、数值和百分比
     },
@@ -350,40 +360,29 @@ const initGaugeChart = (data) => {
   }
   const availabilityChartDom = echarts.init(document.getElementById('availabilityChartDom'))
   const workingChartDom = echarts.init(document.getElementById('workingChartDom'))
-  availabilityChartDom.setOption(option)
-  workingChartDom.setOption(option)
+  type === 'availability'
+    ? availabilityChartDom.setOption(option)
+    : workingChartDom.setOption(option)
 }
 
-const draggableConfig = ref({
-  showValue: true,
-  data: [
-    {
-      name: '2020年',
-      value: 167
-    },
-    {
-      name: '2021年',
-      value: 67
-    },
-    {
-      name: '2022年',
-      value: 123
+// -----------------------------------------------------------------设备运行台时数
+const GetRunTimeForYear = async () => {
+  getRunTimeForYear().then((res) => {
+    for (let key in res.data) {
+      draggableConfig.value.data.push({ name: key, value: res.data[key] })
     }
-  ]
-})
-
-const subsystemList = ref<any>([])
-const GetAvailabilityList = () => {
-  getAvailabilityList().then((res) => {
-    subsystemList.value = res.data
   })
 }
+const draggableConfig = ref<any>({
+  showValue: true,
+  data: []
+})
 
 onMounted(() => {
   GetSystemTypeList()
   GetAvailability()
   GetWorking()
-  GetAvailabilityList()
+  GetRunTimeForYear()
 })
 </script>
 

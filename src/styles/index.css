@@ -21,3 +21,22 @@ body {
   overflow: hidden;
   background: url('@/assets/image/page-bg.jpg') no-repeat;
 }
+
+.el-table, th, td, tr {
+  background-color: rgba(0, 0, 0, 0) !important;
+  color: #EEE0E5 !important;
+  font-size: 16px;
+}
+.el-table__cell{
+  border-bottom: solid 1px #9B30FF !important;
+}
+.el-table__inner-wrapper:before{
+  height: 0 !important;
+}
+td {
+  height: 60px;
+}
+
+.el-dialog {
+  background-color: rgba(17, 86, 135, 0.8) !important;
+}
