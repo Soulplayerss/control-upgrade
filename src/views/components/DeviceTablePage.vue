@@ -93,15 +93,27 @@
               </template>
             </el-table-column>
           </el-table> -->
-          <!-- <div class="w-full h-[98%]"> </div> -->
-          <el-table :data="getValues()">
-            <el-table-column
-              v-for="(item, index) in getHeaders()"
-              :key="index"
-              :prop="item"
-              align="center"
-            />
-          </el-table>
+          <div class="w-full h-[98%]">
+            <table>
+              <!-- <caption>Awesome caption</caption> -->
+              <thead>
+                <tr v-for="(itme, index) in ultimateArray" :key="index">
+                  <th
+                    v-for="itmes in itme"
+                    :key="itmes.name"
+                    :colspan="itmes.colspan"
+                    :rowspan="itmes.rowspan"
+                    >{{ itmes.name }}</th
+                  >
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(itme, index) in tableData" :key="index">
+                  <td v-for="items in itme" :key="items.id">{{ items }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </dv-border-box-11>
     </div>
@@ -210,7 +222,33 @@ const deviceDetailData = ref<any>([
     technologyType: '1',
     todayRunTime: 0,
     totalRunTime: 2561,
-    type: 100,
+    type: 8,
+    useType: '2',
+    weekRunTime: 0,
+    yearRunTime: 2561
+  },
+  {
+    id: 80,
+    monthRunTime: 0,
+    name: '测试1',
+    quarterRunTime: 0,
+    technologyType: '1',
+    todayRunTime: 0,
+    totalRunTime: 2561,
+    type: 8,
+    useType: '2',
+    weekRunTime: 0,
+    yearRunTime: 2561
+  },
+  {
+    id: 95,
+    monthRunTime: 0,
+    name: '测试1.1',
+    quarterRunTime: 0,
+    technologyType: '1',
+    todayRunTime: 0,
+    totalRunTime: 2561,
+    type: 9,
     useType: '2',
     weekRunTime: 0,
     yearRunTime: 2561
@@ -223,7 +261,7 @@ const deviceDetailData = ref<any>([
     technologyType: '1',
     todayRunTime: 0,
     totalRunTime: 2561,
-    type: 100,
+    type: 9,
     useType: '2',
     weekRunTime: 0,
     yearRunTime: 2561
@@ -236,12 +274,158 @@ const deviceDetailData = ref<any>([
     technologyType: '1',
     todayRunTime: 0,
     totalRunTime: 2561,
-    type: 100,
+    type: 10,
+    useType: '2',
+    weekRunTime: 0,
+    yearRunTime: 2561
+  },
+  {
+    id: 93,
+    monthRunTime: 0,
+    name: '测试1',
+    quarterRunTime: 0,
+    technologyType: '1',
+    todayRunTime: 0,
+    totalRunTime: 2561,
+    type: 10,
     useType: '2',
     weekRunTime: 0,
     yearRunTime: 2561
   }
 ])
+
+const tableData = ref<any>([])
+
+const removeContentBeforeFirstOccurrence = (str, element) => {
+  const regex = new RegExp(`(.*?)${element}(.*)`)
+  return str.replace(regex, '$2')
+}
+
+const ultimateArray = ref<any>([])
+const showHeaderTitle = ref<any>(true)
+const mapData = async () => {
+  tableData.value[0] = deviceDetailData.value.map((item) => item.technologyType)
+  tableData.value[0].unshift('当前技术状态')
+  tableData.value[1] = deviceDetailData.value.map((item) => item.useType)
+  tableData.value[1].unshift('当前使用状态')
+  tableData.value[2] = deviceDetailData.value.map((item) => item.todayRunTime + ' h')
+  tableData.value[2].unshift('当日运行时长数')
+  tableData.value[3] = deviceDetailData.value.map((item) => item.weekRunTime + ' h')
+  tableData.value[3].unshift('本周运行时长数')
+  tableData.value[4] = deviceDetailData.value.map((item) => item.monthRunTime + ' h')
+  tableData.value[4].unshift('本月运行时长数')
+  tableData.value[5] = deviceDetailData.value.map((item) => item.quarterRunTime + ' h')
+  tableData.value[5].unshift('本季度运行时长数')
+  tableData.value[6] = deviceDetailData.value.map((item) => item.yearRunTime + ' h')
+  tableData.value[6].unshift('本年度运行时长数')
+  tableData.value[7] = deviceDetailData.value.map((item) => item.totalRunTime + ' h')
+  tableData.value[7].unshift('累计运行时长数')
+  ultimateArray.value[0] = []
+  ultimateArray.value[1] = []
+  //获取数据type
+  let arry = [...deviceDetailData.value.map((item) => item.type)]
+  // 查找记录每个id及个数
+  var obj = {}
+  for (var i = 0, l = arry.length; i < l; i++) {
+    var item = arry[i]
+    obj[item] = obj[item] + 1 || 1
+  }
+
+  //组装每个id及上级合并行位数
+  let arry2 = ref<any>([])
+  for (let key in obj) {
+    arry2.value.push({ id: key, colspan: obj[key] })
+  }
+
+  // systems中查找对应type的数据
+  let arry3 = ref<any>([])
+  await arry2.value.forEach((item) => {
+    arry3.value.push(Object.assign({}, item, systems.filter((event) => event.id == item.id)[0]))
+  })
+  //删除第一个-之前的内容
+  arry3.value.forEach((element) => {
+    if (element.name.indexOf('-') === -1) {
+      ultimateArray.value[0] = deviceDetailData.value.map((item) => {
+        return {
+          name: item.name,
+          colspan: 1,
+          rowspan: 1
+        }
+      })
+      ultimateArray.value[0].unshift({
+        name: '设备状态要素',
+        colspan: 1,
+        rowspan: 1
+      })
+      showHeaderTitle.value = false
+    } else {
+      element.name = removeContentBeforeFirstOccurrence(element.name, '-')
+      if (element.name.indexOf('-') !== -1) {
+        element.oneSpan = element.name.split('-')[0]
+        element.twoSpan = element.name.split('-')[1]
+      } else {
+        element.oneSpan = element.name
+      }
+    }
+  })
+
+  if (!showHeaderTitle.value) return
+
+  let afterDate = ref<any>([])
+  arry3.value.forEach((element) => {
+    let flag = afterDate.value.find((item) => item.oneSpan === element.oneSpan)
+    if (!flag) {
+      afterDate.value.push({ oneSpan: element.oneSpan, origin: [element] })
+    } else {
+      flag.origin.push(element)
+    }
+  })
+
+  afterDate.value.forEach((element) => {
+    let suncolspan = ref<any>(0)
+    element.origin.forEach((item) => {
+      suncolspan.value += item.colspan
+      if (element.origin.length > 1) {
+        ultimateArray.value[1].push({
+          name: item.twoSpan,
+          colspan: item.colspan,
+          rowspan: 1
+        })
+        ultimateArray.value[2] = deviceDetailData.value.map((item) => {
+          return {
+            name: item.name,
+            colspan: 1,
+            rowspan: 1
+          }
+        })
+      }
+    })
+    ultimateArray.value[0].push({
+      name: element.oneSpan,
+      colspan: suncolspan.value,
+      rowspan: afterDate.value.every((obj) => obj.origin.length === 1)
+        ? 1
+        : element.origin.length > 1
+          ? 1
+          : 2
+    })
+  })
+  console.log(ultimateArray.value)
+  if (afterDate.value.every((obj) => obj.origin.length === 1)) {
+    ultimateArray.value[1] = deviceDetailData.value.map((item) => {
+      return {
+        name: item.name,
+        colspan: 1,
+        rowspan: 1
+      }
+    })
+  }
+  ultimateArray.value[0].unshift({
+    name: '设备状态要素',
+    colspan: 1,
+    rowspan: ultimateArray.value.length
+  })
+}
 
 const yearsValue = ref<string>(dayjs().locale('zh-cn').format('YYYY'))
 const list1 = ref([
@@ -511,7 +695,7 @@ const initRunTimeChart = (date, data) => {
       top: '15%',
       left: '2%',
       right: '2%',
-      bottom: '25%',
+      bottom: '15%',
       containLabel: true
     },
     series: [
@@ -558,31 +742,6 @@ const changeYear = () => {
   GetRunTime()
 }
 
-//获取每台设备运行详情
-const headers = [
-  { label: '设备状态要素', value: 'name' },
-  { label: '当前技术状态', value: 'technologyType' },
-  { label: '当前使用状态', value: 'useType' },
-  { label: '当日运行时长数', value: 'todayRunTime' },
-  { label: '本周运行时长数', value: 'weekRunTime' },
-  { label: '本月运行时长数', value: 'monthRunTime' },
-  { label: '本季度运行时长数', value: 'quarterRunTime' },
-  { label: '本年运行时长数', value: 'yearRunTime' },
-  { label: '累计运行时长数', value: 'totalRunTime' }
-]
-
-const getHeaders = () => {
-  return deviceDetailData.value.reduce((pre, _cur, index) => pre.concat(`value${index}`), ['title'])
-}
-const getValues = () => {
-  return headers.map((item) => {
-    return deviceDetailData.value.reduce(
-      (pre, cur, index) => Object.assign(pre, { ['value' + index]: cur[item.value] }),
-      { title: item.label }
-    )
-  })
-}
-
 const GetSystem = async () => {
   await getSystem(props.deviceId).then((res) => {
     console.log(res.data)
@@ -591,6 +750,7 @@ const GetSystem = async () => {
 }
 
 onMounted(() => {
+  mapData()
   GetTechnologyStatus()
   GetUseStatus()
   GetRunTime()
@@ -609,6 +769,19 @@ onMounted(() => {
   }
   .el-select__wrapper {
     background-color: rgba(23, 36, 41, 0.6) !important;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    box-sizing: border-box;
+    border: 2px solid black;
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
   }
 }
 </style>
