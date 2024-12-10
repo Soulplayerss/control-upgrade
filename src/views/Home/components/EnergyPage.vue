@@ -40,24 +40,18 @@ const list1 = ref([
   {
     name: '天然气年度消耗量',
     id: 2
-  }
-])
-const list2 = ref([
+  },
   {
     name: '电能月度消耗量',
-    id: 0
+    id: 3
   },
   {
     name: '天然气月度消耗量',
-    id: 1
+    id: 4
   },
   {
     name: '燃油月度消耗量',
-    id: 2
-  },
-  {
-    name: '油库日库存量',
-    id: 3
+    id: 5
   }
 ])
 
@@ -649,104 +643,73 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="w-full h-full flex flex-col">
-    <div class="_draggable1 mb-5 w-full">
-      <VueDraggable
-        class="flex flex-wrap gap-5 w-full h-full"
-        v-model="list1"
-        :animation="150"
-        ghostClass="ghost"
-        group="people1"
+  <div class="w-full h-full _energyPage">
+    <VueDraggable
+      class="flex flex-wrap gap-5 w-full h-full"
+      v-model="list1"
+      :animation="150"
+      ghostClass="ghost"
+      group="people1"
+    >
+      <div
+        v-for="item in list1"
+        :key="item.id"
+        class="cursor-pointer _draggableItem border-rd-2 h-full"
       >
-        <div
-          v-for="item in list1"
-          :key="item.id"
-          class="cursor-pointer _draggableItem border-rd-2 h-full"
+        <dv-border-box-11
+          :color="['#6fbdc3', '#3a708a']"
+          backgroundColor="rgba(40, 51, 52, 0.8)"
+          :title="item.name"
+          style="font-weight: 600"
         >
-          <dv-border-box-11
-            :color="['#6fbdc3', '#3a708a']"
-            backgroundColor="rgba(40, 51, 52, 0.8)"
-            :title="item.name"
-            style="font-weight: 600"
-          >
-            <div class="w-full h-full box-border px-8 pt-12">
-              <dv-capsule-chart
-                :config="draggableConfig"
-                style="width: 100%; height: 100%; padding-bottom: 20px; padding-top: 20px"
-                v-if="item.name === '天然气年度消耗量'"
-              />
-              <div
-                class="w-full h-full"
-                id="yearPlandepotChartDom"
-                v-if="item.name === '电能年度消耗量'"
-              ></div>
-              <div
-                class="w-full h-full"
-                id="yearPlannaturalChartDom"
-                v-if="item.name === '燃油年度消耗量'"
-              ></div>
-            </div>
-          </dv-border-box-11>
-        </div>
-      </VueDraggable>
-    </div>
-    <div class="_draggable2 w-full">
-      <VueDraggable
-        class="flex flex-wrap gap-5 w-full h-full"
-        v-model="list2"
-        :animation="150"
-        ghostClass="ghost"
-        group="people2"
-      >
-        <div v-for="item in list2" :key="item.id" class="cursor-pointer _draggableItem border-rd-2">
-          <dv-border-box-11
-            :color="['#6fbdc3', '#3a708a']"
-            backgroundColor="rgba(40, 51, 52, 0.8)"
-            :title="item.name"
-            style="font-weight: 600"
-          >
-            <div class="w-full h-full box-border px-8 pt-12">
-              <div
-                class="w-full h-full"
-                id="monthPlandepotChartDom"
-                v-if="item.name === '电能月度消耗量'"
-              ></div>
-              <div
-                class="w-full h-full"
-                id="monthPlanpowerChartDom"
-                v-if="item.name === '天然气月度消耗量'"
-              ></div>
-              <div
-                class="w-full h-full"
-                id="monthPlannaturalChartDom"
-                v-if="item.name === '燃油月度消耗量'"
-              ></div>
-              <div
-                class="w-full h-full"
-                id="dayPlannaturalChartDom"
-                v-if="item.name === '油库日库存量'"
-              ></div>
-            </div>
-          </dv-border-box-11>
-        </div>
-      </VueDraggable>
-    </div>
+          <div class="w-full h-full box-border px-8 pt-12">
+            <dv-capsule-chart
+              :config="draggableConfig"
+              style="width: 100%; height: 100%; padding-bottom: 20px; padding-top: 20px"
+              v-if="item.name === '天然气年度消耗量'"
+            />
+            <div
+              class="w-full h-full"
+              id="yearPlandepotChartDom"
+              v-if="item.name === '电能年度消耗量'"
+            ></div>
+            <div
+              class="w-full h-full"
+              id="yearPlannaturalChartDom"
+              v-if="item.name === '燃油年度消耗量'"
+            ></div>
+            <div
+              class="w-full h-full"
+              id="monthPlandepotChartDom"
+              v-if="item.name === '电能月度消耗量'"
+            ></div>
+            <div
+              class="w-full h-full"
+              id="monthPlanpowerChartDom"
+              v-if="item.name === '天然气月度消耗量'"
+            ></div>
+            <div
+              class="w-full h-full"
+              id="monthPlannaturalChartDom"
+              v-if="item.name === '燃油月度消耗量'"
+            ></div>
+            <div
+              class="w-full h-full"
+              id="dayPlannaturalChartDom"
+              v-if="item.name === '油库日库存量'"
+            ></div>
+          </div>
+        </dv-border-box-11>
+      </div>
+    </VueDraggable>
   </div>
 </template>
 
 <style lang="less">
-._draggable1 {
-  height: calc((100% - 20px) / 3);
-  ._draggableItem {
-    width: calc((100% - 40px) / 3);
-    overflow: hidden;
-  }
-}
-._draggable2 {
-  height: calc(((100% - 20px) / 3) * 2);
+._energyPage {
   ._draggableItem {
     width: calc((100% - 20px) / 2);
-    height: calc((100% - 20px) / 2);
+    height: calc((100% - 40px) / 3);
     overflow: hidden;
   }
 }

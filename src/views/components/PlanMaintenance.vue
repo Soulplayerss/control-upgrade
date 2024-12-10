@@ -1,6 +1,8 @@
 <template>
-  <div class="box-border w-full h-full _planMaintenance border-rd-2 box-border p-8 flex flex-col">
-    <div class="flex justify-center items-center gap-5 py-4">
+  <div
+    class="box-border w-full h-full _planMaintenance border-rd-2 box-border p-8 pt-22 flex flex-col relative"
+  >
+    <div class="absolute top-8 w-full flex justify-center items-center gap-5 pb-5">
       <el-button
         :type="activeIndex === item.id ? 'success' : 'primary'"
         @click="clickPlan(item.id)"
@@ -11,9 +13,13 @@
         >{{ item.name }}</el-button
       >
     </div>
-    <div class="flex-1 box-border overflow-hidden">
-      <dv-border-box-10 :color="['#223bfa', '#223bfa']">
-        <div class="p-4">
+    <div class="w-full h-full">
+      <dv-border-box-11
+        :color="['#6fbdc3', '#3a708a']"
+        :title="props.tableTitle"
+        style="font-weight: 600"
+      >
+        <div class="p-4 pt-15 box-border overflow-y-auto">
           <el-table :data="tableData" stripe v-if="props.tableTitle === '一级保养'">
             <el-table-column prop="name" label="设备名称" />
             <el-table-column prop="maintain" label="一级保养" />
@@ -63,7 +69,7 @@
             <el-table-column prop="month12" label="12月" />
           </el-table>
         </div>
-      </dv-border-box-10>
+      </dv-border-box-11>
     </div>
   </div>
 </template>

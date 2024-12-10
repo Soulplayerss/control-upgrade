@@ -24,19 +24,53 @@ body {
 
 .el-table, th, td, tr {
   background-color: rgba(0, 0, 0, 0) !important;
-  color: #EEE0E5 !important;
+  color: #fff !important;
   font-size: 16px;
 }
-.el-table__cell{
-  border-bottom: solid 1px #9B30FF !important;
+.el-table {
+  border-collapse: collapse;
 }
+.el-table--border:before, .el-table--border:after {
+  width: 0 !important;
+}
+.el-table--border .el-table__inner-wrapper:after {
+  height: 2px !important;
+  background-color: rgba(25,152,162, 0.8) !important;
+}
+.el-table__border-left-patch {
+  width: 2px !important;
+  background-color: rgba(25,152,162, 0.8) !important;
+}
+/* .el-table__cell{
+  border-bottom: solid 1px #9B30FF !important;
+} */
 .el-table__inner-wrapper:before{
   height: 0 !important;
 }
-td {
+td, th {
   height: 60px;
+  border: solid 1px rgba(25,152,162, 0.8) !important;
+}
+tr:hover {
+  background-color: rgba(25,152,162, 0.3) !important;
+}
+.el-scrollbar{
+  border-bottom: solid 1px rgba(25,152,162, 0.8);
 }
 
 .el-dialog {
   background-color: rgba(17, 86, 135, 0.8) !important;
+}
+
+.el-date-editor .el-input__inner,.el-date-editor .el-input__wrapper {
+  background-color: rgba(49, 46, 46, 0.8); /* 自定义背景色 */
+  color:#fff
+}
+
+.el-date-picker {
+  background-color: rgba(17, 86, 135, 0.8) !important;
+}
+
+.el-date-picker__header-label, .el-date-table-cell__text {
+  color: #fff !important;
 }

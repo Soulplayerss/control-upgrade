@@ -5,6 +5,40 @@ export const getPlanExperiment = () => {
   return request.get({ url: '/tplay/screen/plan/experiment' })
 }
 
+// 日计划
+export const getListByPlanDay = () => {
+  return request.get({ url: '/tplay/screen/plan/getListByPlanDay' })
+}
+
+// 试验完成情况
+export const getCompletionStatus = (time) => {
+  return request.get({ url: `/tplay/screen/plan/completionStatus/${time}` })
+}
+
+// 试验岗位人数
+export const getPlanStationUserNum = () => {
+  return request.get({ url: '/tplay/screen/plan/planStationUserNum' })
+}
+
+// 本周工作量
+export const getWorkloadForWeek = () => {
+  return request.get({ url: '/tplay/screen/plan/workloadForWeek' })
+}
+
+// 周计划
+export const getListByPlanweek = () => {
+  return request.get({ url: '/tplay/screen/plan/getListByPlanweek' })
+}
+
+// 年计划
+export const getListByPlanyear = (id) => {
+  return request.get({ url: `/tplay/screen/plan/getListByPlanyear/${id}` })
+}
+
+export const queryPlanweekresources = () => {
+  return request.get({ url: '/tplay/planweekresources/queryPlanweekresources' })
+}
+
 // 保养任务板块
 export const getPlanMaintenance = () => {
   return request.get({ url: '/tplay/screen/plan/maintenance' })

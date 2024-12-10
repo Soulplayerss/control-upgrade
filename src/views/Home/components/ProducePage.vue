@@ -11,6 +11,7 @@ import {
 } from '@/api/index.ts'
 import NoData from '../../components/NoData.vue'
 import PlanMaintenance from '../../components/PlanMaintenance.vue'
+import PlanExperiment from '../../components/PlanExperiment.vue'
 
 // echarts按需引入
 import { use, graphic } from 'echarts/core'
@@ -41,10 +42,13 @@ const props = defineProps({
 const emit = defineEmits(['to-table'])
 
 const showTable = ref<Boolean>(false)
-
+const showPlanExperiment = ref<Boolean>(false)
+const showType = ref<string>('')
 watch(props, (newValue) => {
-  showTable.value = !newValue.showMenu
-  if (!showTable.value) {
+  showType.value === '保养任务模块'
+    ? (showTable.value = !newValue.showMenu)
+    : (showPlanExperiment.value = !newValue.showMenu)
+  if (newValue.showMenu) {
     GetPlanExperiment()
     GetPlanMaintenance()
     GetPlanTechnical()
@@ -53,8 +57,18 @@ watch(props, (newValue) => {
 })
 
 const tableTitle = ref<string>('')
+//打开保养
 const toTable = (name) => {
+  showType.value = '保养任务模块'
   showTable.value = true
+  tableTitle.value = name
+  emit('to-table', name)
+}
+
+//打开实验计划
+const clickExperiment = (name) => {
+  showType.value = '实验计划模块'
+  showPlanExperiment.value = true
   tableTitle.value = name
   emit('to-table', name)
 }
@@ -285,15 +299,15 @@ const initPlanTechnicalPieChart = () => {
 //--------------------------------------------------------------------------------------------维修任务板块
 const planRepaiData = ref<any>({})
 // ----获取数据
-const GetPlanRepair = () => {
-  getPlanRepair().then((res) => {
+const GetPlanRepair = async () => {
+  await getPlanRepair().then((res) => {
     if (res && res.data) {
       planRepaiData.value = res.data
       //初始化水波球
-      initPlanRepaiLiquidFillChart()
-      initPlanRepaiPieChart(planRepaiData.value.yearTaskRate)
     }
   })
+  initPlanRepaiLiquidFillChart()
+  initPlanRepaiPieChart(planRepaiData.value.yearTaskRate)
 }
 // ----水波球
 const initPlanRepaiLiquidFillChart = () => {
@@ -649,10 +663,7 @@ const initPlanExperimentBarChart = () => {
   experimentBarChartDom.setOption(option)
 }
 
-const clickExperiment = (value) => {
-  console.log(value)
-}
-
+//本周临时维修
 const showPlantEmporary = ref<boolean>(false)
 const openPlantEmporary = () => {
   showPlantEmporary.value = true
@@ -677,10 +688,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full _producePage">
     <PlanMaintenance :tableTitle="tableTitle" v-if="showTable" />
+    <PlanExperiment :tableTitle="tableTitle" v-if="showPlanExperiment" />
     <VueDraggable
-      v-else
+      v-if="!showTable && !showPlanExperiment"
       class="flex flex-wrap gap-5 w-full h-full"
       v-model="list1"
       :animation="150"
@@ -698,13 +710,13 @@ onMounted(() => {
                 <div class="absolute bottom-0 right-4 w-[420px] h-[20px]">
                   <dv-decoration-8 :reverse="true" style="width: 420px; height: 30px" />
                 </div>
-                <div class="_chengeBtn mr-4" @click="clickExperiment('day')">
+                <div class="_chengeBtn mr-4" @click="clickExperiment('实验日生产计划')">
                   <dv-border-box-6 backgroundColor="#26495c">日计划</dv-border-box-6>
                 </div>
-                <div class="_chengeBtn mr-4" @click="clickExperiment('week')">
+                <div class="_chengeBtn mr-4" @click="clickExperiment('周实验计划排产表')">
                   <dv-border-box-6 backgroundColor="#26495c">周计划</dv-border-box-6>
                 </div>
-                <div class="_chengeBtn" @click="clickExperiment('year')">
+                <div class="_chengeBtn" @click="clickExperiment('年度生产计划')">
                   <dv-border-box-6 backgroundColor="#26495c">年计划</dv-border-box-6>
                 </div>
               </div>
@@ -731,21 +743,17 @@ onMounted(() => {
               <div
                 class="w-[200px] h-full ml-4 _experimentRight flex flex-col pt-8 box-border text-5"
               >
-                <div class="flex-1 flex flex-col border-rd-2 box-border">
-                  <div class="flex items-centar">
-                    <dv-decoration-9 class="ma mb-3" style="width: 140px; height: 140px">{{
-                      planExperimentData.todayCount
-                    }}</dv-decoration-9>
-                  </div>
-                  <span class="block">日实验总量</span>
+                <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
+                  <dv-decoration-9 style="height: 10.5vh; width: 10.5vh">{{
+                    planExperimentData.todayCount
+                  }}</dv-decoration-9>
+                  <span class="block pt-2">日实验总量</span>
                 </div>
-                <div class="flex-1 flex flex-col border-rd-2 box-border">
-                  <div class="flex items-centar">
-                    <dv-decoration-9 class="ma mb-3" style="width: 140px; height: 140px">{{
-                      planExperimentData.weekCount
-                    }}</dv-decoration-9>
-                  </div>
-                  <span class="lock">周实验总量</span>
+                <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
+                  <dv-decoration-9 style="width: 10.5vh; height: 10.5vh">{{
+                    planExperimentData.weekCount
+                  }}</dv-decoration-9>
+                  <span class="block pt-2">周实验总量</span>
                 </div>
               </div>
             </div>
@@ -754,17 +762,17 @@ onMounted(() => {
                 <div class="w-full h-full" id="maintenanceBarChartDom"></div>
               </div>
               <div class="w-[200px] h-full ml-4 box-border pt-10 relative flex flex-col">
-                <div class="flex-1">
-                  <dv-decoration-9 class="ma mb-3" style="width: 140px; height: 140px"
+                <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
+                  <dv-decoration-9 style="width: 10.5vh; height: 10.5vh"
                     >{{ planMaintenanceData.oneCompleteRate }}%</dv-decoration-9
                   >
-                  <span class="text-5">一保完成率</span>
+                  <span class="text-5 pt-2">一保完成率</span>
                 </div>
-                <div class="flex-1">
-                  <dv-decoration-9 class="ma mb-3" style="width: 140px; height: 140px"
+                <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
+                  <dv-decoration-9 style="width: 10.5vh; height: 10.5vh"
                     >{{ planMaintenanceData.twoCompleteRate }}%</dv-decoration-9
                   >
-                  <span class="text-5">二保完成率</span>
+                  <span class="text-5 pt-2">二保完成率</span>
                 </div>
               </div>
             </div>
@@ -843,28 +851,31 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-._draggableItem {
-  width: calc((100% - 20px) / 2);
-  height: calc((100% - 20px) / 2);
-  background-color: rgba(40, 51, 52, 0.8);
-  overflow: hidden;
-}
+._producePage {
+  height: calc(100vh - 176px);
+  ._draggableItem {
+    width: calc((100% - 20px) / 2);
+    height: calc((100% - 20px) / 2);
+    background-color: rgba(40, 51, 52, 0.8);
+    overflow: hidden;
+  }
 
-._chengeBtn {
-  width: 100px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  cursor: pointer;
-  margin-top: 12px;
-}
+  ._chengeBtn {
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
 
-._repairItem {
-  width: calc((100% - 40px) / 3);
-  background-color: rgba(19, 29, 67, 0.4);
-}
+  ._repairItem {
+    width: calc((100% - 40px) / 3);
+    background-color: rgba(19, 29, 67, 0.4);
+  }
 
-.dv-water-pond-level canvas {
-  margin-left: 0 !important;
+  .dv-water-pond-level canvas {
+    margin-left: 0 !important;
+  }
 }
 </style>

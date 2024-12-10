@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full" v-if="showTable">
-    <TablePage :deviceId="deviceId" :tableTitle="tableTitle" />
+    <DeviceTablePage :deviceId="deviceId" :tableTitle="tableTitle" />
   </div>
   <div class="w-full h-full flex gap-5" v-else>
     <div class="w-12.5% h-full flex flex-col gap-5 min-w-45">
@@ -119,7 +119,7 @@ import { onMounted, ref, watch } from 'vue'
 import 'echarts-liquidfill'
 import { VueDraggable } from 'vue-draggable-plus'
 import PieOptionPage from '../../components/PieOptionPage.vue'
-import TablePage from '../../components/TablePage.vue'
+import DeviceTablePage from '../../components/DeviceTablePage.vue'
 import { getSystemTypeList, getAvailability, getWorking, getRunTimeForYear } from '@/api/index.ts'
 
 const emit = defineEmits(['to-table'])
