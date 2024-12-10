@@ -201,6 +201,48 @@ const systems = [
   { id: 100, name: '2001小供气系统2' }
 ]
 
+const deviceDetailData = ref<any>([
+  {
+    id: 90,
+    monthRunTime: 0,
+    name: '测试1',
+    quarterRunTime: 0,
+    technologyType: '1',
+    todayRunTime: 0,
+    totalRunTime: 2561,
+    type: 100,
+    useType: '2',
+    weekRunTime: 0,
+    yearRunTime: 2561
+  },
+  {
+    id: 91,
+    monthRunTime: 0,
+    name: '测试1',
+    quarterRunTime: 0,
+    technologyType: '1',
+    todayRunTime: 0,
+    totalRunTime: 2561,
+    type: 100,
+    useType: '2',
+    weekRunTime: 0,
+    yearRunTime: 2561
+  },
+  {
+    id: 92,
+    monthRunTime: 0,
+    name: '测试1',
+    quarterRunTime: 0,
+    technologyType: '1',
+    todayRunTime: 0,
+    totalRunTime: 2561,
+    type: 100,
+    useType: '2',
+    weekRunTime: 0,
+    yearRunTime: 2561
+  }
+])
+
 const yearsValue = ref<string>(dayjs().locale('zh-cn').format('YYYY'))
 const list1 = ref([
   {
@@ -517,48 +559,6 @@ const changeYear = () => {
 }
 
 //获取每台设备运行详情
-const deviceDetailData = ref<any>([
-  {
-    id: 90,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 100,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 91,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 100,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 92,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 100,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  }
-])
-
 const headers = [
   { label: '设备状态要素', value: 'name' },
   { label: '当前技术状态', value: 'technologyType' },
