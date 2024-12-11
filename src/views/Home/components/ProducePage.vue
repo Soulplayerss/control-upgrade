@@ -9,7 +9,6 @@ import {
   getPlanExperiment,
   getPlantEmporaryList
 } from '@/api/index.ts'
-import NoData from '../../components/NoData.vue'
 import PlanMaintenance from '../../components/PlanMaintenance.vue'
 import PlanExperiment from '../../components/PlanExperiment.vue'
 
@@ -745,7 +744,9 @@ onMounted(() => {
               <div
                 class="w-[200px] h-full ml-4 _experimentRight flex flex-col pt-2 box-border text-[0.7vw]"
               >
-                <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
+                <div
+                  class="h-1/2 flex flex-col items-center justify-end border-rd-2 box-border pb-[0.85vw]"
+                >
                   <dv-decoration-9 style="height: 5vw; width: 5vw">{{
                     planExperimentData.todayCount
                   }}</dv-decoration-9>
@@ -764,7 +765,9 @@ onMounted(() => {
                 <div class="w-full h-full" id="maintenanceBarChartDom"></div>
               </div>
               <div class="w-[200px] h-full ml-4 box-border pt-2 relative flex flex-col">
-                <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
+                <div
+                  class="h-1/2 flex flex-col items-center justify-end border-rd-2 box-border pb-[0.85vw]"
+                >
                   <dv-decoration-9 style="width: 5vw; height: 5vw"
                     >{{ planMaintenanceData.oneCompleteRate }}%</dv-decoration-9
                   >
@@ -779,8 +782,7 @@ onMounted(() => {
               </div>
             </div>
             <div v-if="item.name === '技改任务模块'" class="flex-1 box-border text-5.5">
-              <NoData class="w-50 ma" v-if="!planTechnicalData.length" />
-              <div class="w-full h-full flex" v-else @click="toTable('技改任务')">
+              <div class="w-full h-full flex" @click="toTable('技改任务')">
                 <div
                   class="w-[25%] h-full box-border relative flex flex-col"
                   v-show="planTechnicalData.length"
@@ -874,7 +876,7 @@ onMounted(() => {
 
   ._repairItem {
     width: calc((100% - 40px) / 3);
-    background-color: rgba(19, 29, 67, 0.4);
+    // background-color: rgba(19, 29, 67, 0.4);
   }
 
   .dv-water-pond-level canvas {

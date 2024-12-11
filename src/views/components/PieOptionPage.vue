@@ -228,15 +228,17 @@ export default {
           return dataArr
         }
 
+        let screenWidth =
+          window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
         let option = {
           title: [
             {
+              top: 'center',
+              x: '46%',
               text: props.value + '%', //动态传递
-              x: '45%',
-              y: '45%',
               textAlign: 'center',
               textStyle: {
-                fontSize: props.valuesize,
+                fontSize: screenWidth > 1920 ? props.valuesize : 18,
                 fontWeight: '700',
                 color: props.titlecolor,
                 textAlign: 'center'

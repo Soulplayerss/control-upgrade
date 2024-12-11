@@ -49,7 +49,7 @@
       </VueDraggable>
     </div>
 
-    <div class="flex-1" :class="props.tableTitle === '实验日生产计划' ? 'max-h-[66.66%]' : ''">
+    <div class="flex-1" :class="props.tableTitle === '实验日生产计划' ? 'max-h-[66%]' : ''">
       <div class="w-full h-full">
         <dv-border-box-11
           :color="['#6fbdc3', '#3a708a']"
@@ -498,7 +498,7 @@ const initCompletionStatusChart = (data) => {
         radius: ['15%'], // 边框半径百分比
         labelLine: {
           normal: {
-            show: false // 不显示标签的连线
+            show: true // 不显示标签的连线
           }
         },
         data: [
@@ -518,11 +518,11 @@ const initCompletionStatusChart = (data) => {
         roseType: 'area', // 设置环形图的内外半径，实现环形效果
         // avoidLabelOverlap: false,
         label: {
-          show: false
+          show: true
         },
         labelLine: {
           normal: {
-            show: false // 不显示标签的连线
+            show: true // 不显示标签的连线
           }
         },
         data: data
