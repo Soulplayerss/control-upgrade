@@ -110,12 +110,12 @@ const GetPlanMaintenance = async () => {
       planMaintenanceData.value.twoCompleteRate = res.data.twoCompleteRate
       for (let key in res.data.one) {
         if (res.data.one.hasOwnProperty(key)) {
-          planMaintenanceData.value.oneData.push(res.data.one[key] + 1)
+          planMaintenanceData.value.oneData.push(res.data.one[key])
         }
       }
       for (let key in res.data.two) {
         if (res.data.two.hasOwnProperty(key)) {
-          planMaintenanceData.value.twoData.push(res.data.two[key] + 2)
+          planMaintenanceData.value.twoData.push(res.data.two[key])
         }
       }
     }
@@ -560,11 +560,14 @@ const initPlanExperimentBarChart = () => {
         color: '#ffffff'
       },
       icon: 'rect',
-      itemWidth: 24,
+      itemWidth: 20,
       itemHeight: 3
     },
     xAxis: {
-      data: planExperimentData.value.xDate,
+      data:
+        planExperimentData.value.xDate.length === 0
+          ? ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          : planExperimentData.value.xDate,
       type: 'category',
       nameLocation: 'middle',
       //刻度线
@@ -588,6 +591,7 @@ const initPlanExperimentBarChart = () => {
       }
     },
     yAxis: {
+      type: 'value',
       scale: true,
       splitLine: {
         lineStyle: {
@@ -595,7 +599,7 @@ const initPlanExperimentBarChart = () => {
         }
       },
       axisTick: {
-        show: false
+        show: true
       },
       axisLine: {
         lineStyle: {
@@ -604,7 +608,9 @@ const initPlanExperimentBarChart = () => {
       },
       axisLabel: {
         color: '#999999'
-      }
+      },
+      min: 0,
+      max: planExperimentData.value.xData.length === 0 ? 5 : null
     },
     grid: {
       top: '15%',
@@ -628,7 +634,9 @@ const initPlanExperimentBarChart = () => {
       },
       {
         name: '',
-        data: planExperimentData.value.xData,
+        data: planExperimentData.value.xData.length
+          ? planExperimentData.value.xData
+          : [0, 0, 0, 0, 0, 0, 0, 0, 0],
         type: 'bar',
         barWidth: 24,
         barGap: '50%', //柱状图间距，此处为24*50%=7
@@ -701,15 +709,12 @@ onMounted(() => {
     >
       <div v-for="item in list1" :key="item.id" class="cursor-pointer _draggableItem border-rd-2">
         <dv-border-box-1>
-          <div class="w-full h-full box-border p-4 flex flex-col">
-            <div class="xl:flex justify-between mt-6">
-              <dv-decoration-11 style="width: 200px; height: 60px">{{
+          <div class="w-full h-full box-border px-4 flex flex-col">
+            <div class="xl:flex justify-between mt-4">
+              <dv-decoration-11 style="width: 180px; height: 56px">{{
                 item.name
               }}</dv-decoration-11>
-              <div class="relative flex flex-justify-end pr-20" v-if="item.name === '实验计划模块'">
-                <div class="absolute bottom-0 right-4 w-[420px] h-[20px]">
-                  <dv-decoration-8 :reverse="true" style="width: 420px; height: 30px" />
-                </div>
+              <div class="relative flex flex-justify-end pr-4" v-if="item.name === '实验计划模块'">
                 <div class="_chengeBtn mr-4" @click="clickExperiment('实验日生产计划')">
                   <dv-border-box-6 backgroundColor="#26495c">日计划</dv-border-box-6>
                 </div>
@@ -720,10 +725,7 @@ onMounted(() => {
                   <dv-border-box-6 backgroundColor="#26495c">年计划</dv-border-box-6>
                 </div>
               </div>
-              <div class="relative flex flex-justify-end pr-20" v-if="item.name === '保养任务模块'">
-                <div class="absolute bottom-0 right-4 w-[300px] h-[20px]">
-                  <dv-decoration-8 :reverse="true" style="width: 300px; height: 30px" />
-                </div>
+              <div class="relative flex flex-justify-end pr-4" v-if="item.name === '保养任务模块'">
                 <div class="_chengeBtn mr-4">
                   <dv-border-box-6 @click="toTable('一级保养')" backgroundColor="#26495c"
                     >一级保养</dv-border-box-6
@@ -741,16 +743,16 @@ onMounted(() => {
                 <div class="w-full h-full" id="experimentBarChartDom"></div>
               </div>
               <div
-                class="w-[200px] h-full ml-4 _experimentRight flex flex-col pt-8 box-border text-5"
+                class="w-[200px] h-full ml-4 _experimentRight flex flex-col pt-2 box-border text-[0.7vw]"
               >
                 <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
-                  <dv-decoration-9 style="height: 10.5vh; width: 10.5vh">{{
+                  <dv-decoration-9 style="height: 5vw; width: 5vw">{{
                     planExperimentData.todayCount
                   }}</dv-decoration-9>
                   <span class="block pt-2">日实验总量</span>
                 </div>
                 <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
-                  <dv-decoration-9 style="width: 10.5vh; height: 10.5vh">{{
+                  <dv-decoration-9 style="width: 5vw; height: 5vw">{{
                     planExperimentData.weekCount
                   }}</dv-decoration-9>
                   <span class="block pt-2">周实验总量</span>
@@ -761,18 +763,18 @@ onMounted(() => {
               <div class="flex-1 h-full">
                 <div class="w-full h-full" id="maintenanceBarChartDom"></div>
               </div>
-              <div class="w-[200px] h-full ml-4 box-border pt-10 relative flex flex-col">
+              <div class="w-[200px] h-full ml-4 box-border pt-2 relative flex flex-col">
                 <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
-                  <dv-decoration-9 style="width: 10.5vh; height: 10.5vh"
+                  <dv-decoration-9 style="width: 5vw; height: 5vw"
                     >{{ planMaintenanceData.oneCompleteRate }}%</dv-decoration-9
                   >
-                  <span class="text-5 pt-2">一保完成率</span>
+                  <span class="text-[0.7vw] pt-2">一保完成率</span>
                 </div>
                 <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
-                  <dv-decoration-9 style="width: 10.5vh; height: 10.5vh"
+                  <dv-decoration-9 style="width: 5vw; height: 5vw"
                     >{{ planMaintenanceData.twoCompleteRate }}%</dv-decoration-9
                   >
-                  <span class="text-5 pt-2">二保完成率</span>
+                  <span class="text-[0.7vw] pt-2">二保完成率</span>
                 </div>
               </div>
             </div>
@@ -788,13 +790,15 @@ onMounted(() => {
                   <div class="flex-1">
                     <div class="w-full h-full" :id="`planTechnicalPieChartDom${index}`"></div>
                   </div>
-                  <div class="w-full box-border text-center h-20 leading-20">{{ items.name }}</div>
+                  <div class="text-[1vw] w-full box-border text-center pb-11.5">{{
+                    items.name
+                  }}</div>
                 </div>
               </div>
             </div>
             <div
               v-if="item.name === '维修任务模块'"
-              class="flex-1 gap-5 py-7.5 px-4 flex box-border text-5.5"
+              class="flex-1 gap-5 py-7.5 px-4 flex box-border text-[1vw]"
             >
               <div
                 class="_repairItem h-full border-rd-2 box-border p-4 flex flex-col justify-center items-center"
@@ -852,12 +856,11 @@ onMounted(() => {
 
 <style lang="less" scoped>
 ._producePage {
-  height: calc(100vh - 176px);
+  height: 100% !important;
   ._draggableItem {
     width: calc((100% - 20px) / 2);
     height: calc((100% - 20px) / 2);
     background-color: rgba(40, 51, 52, 0.8);
-    overflow: hidden;
   }
 
   ._chengeBtn {

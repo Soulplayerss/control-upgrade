@@ -30,7 +30,7 @@ const backPage = () => {
 <template>
   <div class="w-full h-full _home flex flex-col relative">
     <div
-      class="absolute z-2 top-3.5 right-25 cursor-pointer"
+      class="absolute z-2 top-2 right-25 cursor-pointer"
       v-if="showMenu"
       @click="showMenuItem = !showMenuItem"
     >

@@ -8,11 +8,7 @@
         ghostClass="ghost"
         group="people1"
       >
-        <div
-          v-for="item in list1"
-          :key="item.id"
-          class="cursor-pointer _draggableItem border-rd-2 h-full"
-        >
+        <div v-for="item in list1" :key="item.id" class="cursor-pointer _draggableItem border-rd-2">
           <dv-border-box-11
             :color="['#6fbdc3', '#3a708a']"
             backgroundColor="rgba(40, 51, 52, 0.8)"
@@ -32,9 +28,9 @@
                 />
               </div>
               <div class="w-full h-full" id="technologyStatusChartDom" v-if="item.id === 0"></div>
-              <div class="w-full h-full flex flex-wrap pt-2" v-if="item.id === 1">
+              <div class="w-full h-full flex flex-wrap box-border pt-2" v-if="item.id === 1">
                 <div
-                  class="w-1/2 h-1/2 flex flex-col items-center"
+                  class="w-1/2 h-1/2 flex flex-col items-center text-[0.7vw]"
                   v-for="(items, index) in stationUserNum"
                   :key="index"
                 >
@@ -53,7 +49,7 @@
       </VueDraggable>
     </div>
 
-    <div class="flex-1" :class="props.tableTitle === '实验日生产计划' ? 'max-h-[66%]' : ''">
+    <div class="flex-1" :class="props.tableTitle === '实验日生产计划' ? 'max-h-[66.66%]' : ''">
       <div class="w-full h-full">
         <dv-border-box-11
           :color="['#6fbdc3', '#3a708a']"
@@ -62,330 +58,332 @@
           style="font-weight: 600"
         >
           <div class="px-10 pt-18 box-border w-full h-full">
-            <div class="w-full h-[95%] overflow-y-auto">
-              <el-table :data="tableData" v-if="props.tableTitle === '实验日生产计划'">
-                <el-table-column type="index" label="序号" />
-                <el-table-column prop="date" label="日期" />
-                <el-table-column prop="equipment" label="实验设备" />
-                <el-table-column prop="phone" label="调度电话" />
-                <el-table-column prop="type" label="计划属性" />
-                <el-table-column label="计划时间">
-                  <el-table-column prop="time" label="时分-时分" />
-                </el-table-column>
-                <el-table-column label="供气系统">
-                  <el-table-column label="2001大供气">
-                    <el-table-column prop="resources1" label="低压" width="120" />
-                    <el-table-column prop="resources2" label="中压" width="120" />
+            <div class="_ tableBox w-[100%]">
+              <el-scrollbar height="100%">
+                <el-table :data="tableData" v-if="props.tableTitle === '实验日生产计划'">
+                  <el-table-column type="index" label="序号" />
+                  <el-table-column prop="date" label="日期" />
+                  <el-table-column prop="equipment" label="实验设备" />
+                  <el-table-column prop="phone" label="调度电话" />
+                  <el-table-column prop="type" label="计划属性" />
+                  <el-table-column label="计划时间">
+                    <el-table-column prop="time" label="时分-时分" />
                   </el-table-column>
-                  <el-table-column label="2001小供气">
-                    <el-table-column prop="resources3" label="低压" width="120" />
-                    <el-table-column prop="resources4" label="中压" width="120" />
-                    <el-table-column prop="resources5" label="高压" width="120" />
-                  </el-table-column>
-                  <el-table-column label="2001a辅助气源">
-                    <el-table-column prop="resources6" label="低压" width="120" />
-                    <el-table-column prop="resources7" label="中压" width="120" />
-                    <el-table-column prop="resources8" label="高压" width="120" />
-                  </el-table-column>
-                </el-table-column>
-                <el-table-column label="抽气系统">
-                  <el-table-column label="2002抽气">
-                    <el-table-column prop="resources9" label="一抽" width="120" />
-                    <el-table-column prop="resources10" label="二抽" width="120" />
-                  </el-table-column>
-                  <el-table-column label="2002a抽气">
-                    <el-table-column prop="resources11" label="一抽" width="120" />
-                    <el-table-column prop="resources12" label="二抽" width="120" />
-                  </el-table-column>
-                </el-table-column>
-                <el-table-column label="空中预处理系统">
-                  <el-table-column label="2003制冷">
-                    <el-table-column prop="resources13" label="干燥系统" width="120" />
-                    <el-table-column prop="resources14" label="膨胀涡轮" width="120" />
-                  </el-table-column>
-                  <el-table-column label="2003b降温">
-                    <el-table-column prop="resources15" label="干燥系统" width="120" />
-                    <el-table-column prop="resources16" label="气波机" width="120" />
-                    <el-table-column prop="resources17" label="大气进气" width="120" />
-                  </el-table-column>
-                  <el-table-column label="2004降温">
-                    <el-table-column prop="resources18" label="干燥系统" width="120" />
-                    <el-table-column prop="resources19" label="气波机" width="120" />
-                  </el-table-column>
-                  <el-table-column label="2004加温">
-                    <el-table-column prop="resources20" label="加温炉" width="120" />
-                    <el-table-column prop="resources21" label="锅炉" width="120" />
-                  </el-table-column>
-                </el-table-column>
-                <el-table-column label="水油气系统">
-                  <el-table-column prop="resources22" label="自然水" width="120" />
-                  <el-table-column prop="resources23" label="软化水" width="120" />
-                  <el-table-column prop="resources24" label="燃油" width="120" />
-                  <el-table-column prop="resources25" label="燃气" width="120" />
-                </el-table-column>
-                <el-table-column prop="status" label="状态" />
-              </el-table>
-              <el-table :data="tableData" v-if="props.tableTitle === '周实验计划排产表'">
-                <el-table-column type="index" label="序号" />
-                <el-table-column prop="date" label="日期" />
-                <el-table-column prop="equipment" label="实验设备" />
-                <el-table-column label="计划时间">
-                  <el-table-column prop="time" label="时分-时分" />
-                </el-table-column>
-                <el-table-column label="供气系统">
-                  <el-table-column label="2001大供气">
-                    <el-table-column label="低压" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources1Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources1 }}</div>
-                      </template>
+                  <el-table-column label="供气系统">
+                    <el-table-column label="2001大供气">
+                      <el-table-column prop="resources1" label="低压" width="120" />
+                      <el-table-column prop="resources2" label="中压" width="120" />
                     </el-table-column>
-                    <el-table-column label="中压" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources2Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources2 }}</div>
-                      </template>
+                    <el-table-column label="2001小供气">
+                      <el-table-column prop="resources3" label="低压" width="120" />
+                      <el-table-column prop="resources4" label="中压" width="120" />
+                      <el-table-column prop="resources5" label="高压" width="120" />
+                    </el-table-column>
+                    <el-table-column label="2001a辅助气源">
+                      <el-table-column prop="resources6" label="低压" width="120" />
+                      <el-table-column prop="resources7" label="中压" width="120" />
+                      <el-table-column prop="resources8" label="高压" width="120" />
                     </el-table-column>
                   </el-table-column>
-                  <el-table-column label="2001小供气">
-                    <el-table-column label="低压" width="120">
+                  <el-table-column label="抽气系统">
+                    <el-table-column label="2002抽气">
+                      <el-table-column prop="resources9" label="一抽" width="120" />
+                      <el-table-column prop="resources10" label="二抽" width="120" />
+                    </el-table-column>
+                    <el-table-column label="2002a抽气">
+                      <el-table-column prop="resources11" label="一抽" width="120" />
+                      <el-table-column prop="resources12" label="二抽" width="120" />
+                    </el-table-column>
+                  </el-table-column>
+                  <el-table-column label="空中预处理系统">
+                    <el-table-column label="2003制冷">
+                      <el-table-column prop="resources13" label="干燥系统" width="120" />
+                      <el-table-column prop="resources14" label="膨胀涡轮" width="120" />
+                    </el-table-column>
+                    <el-table-column label="2003b降温">
+                      <el-table-column prop="resources15" label="干燥系统" width="120" />
+                      <el-table-column prop="resources16" label="气波机" width="120" />
+                      <el-table-column prop="resources17" label="大气进气" width="120" />
+                    </el-table-column>
+                    <el-table-column label="2004降温">
+                      <el-table-column prop="resources18" label="干燥系统" width="120" />
+                      <el-table-column prop="resources19" label="气波机" width="120" />
+                    </el-table-column>
+                    <el-table-column label="2004加温">
+                      <el-table-column prop="resources20" label="加温炉" width="120" />
+                      <el-table-column prop="resources21" label="锅炉" width="120" />
+                    </el-table-column>
+                  </el-table-column>
+                  <el-table-column label="水油气系统">
+                    <el-table-column prop="resources22" label="自然水" width="120" />
+                    <el-table-column prop="resources23" label="软化水" width="120" />
+                    <el-table-column prop="resources24" label="燃油" width="120" />
+                    <el-table-column prop="resources25" label="燃气" width="120" />
+                  </el-table-column>
+                  <el-table-column prop="status" label="状态" />
+                </el-table>
+                <el-table :data="tableData" v-if="props.tableTitle === '周实验计划排产表'">
+                  <el-table-column type="index" label="序号" />
+                  <el-table-column prop="date" label="日期" />
+                  <el-table-column prop="equipment" label="实验设备" />
+                  <el-table-column label="计划时间">
+                    <el-table-column prop="time" label="时分-时分" />
+                  </el-table-column>
+                  <el-table-column label="供气系统">
+                    <el-table-column label="2001大供气">
+                      <el-table-column label="低压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources1Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources1 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="中压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources2Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources2 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="2001小供气">
+                      <el-table-column label="低压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources3Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources3 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="中压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources4Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources4 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="高压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources5Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources5 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="2001a辅助气源">
+                      <el-table-column label="低压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources6Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources6 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="中压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources7Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources7 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="高压" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources8Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources8 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                  </el-table-column>
+                  <el-table-column label="抽气系统">
+                    <el-table-column label="2002抽气">
+                      <el-table-column label="一抽" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources9Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources9 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="二抽" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources10Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources10 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="2002a抽气">
+                      <el-table-column label="一抽" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources11Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources11 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="二抽" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources12Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources12 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                  </el-table-column>
+                  <el-table-column label="空中预处理系统">
+                    <el-table-column label="2003制冷">
+                      <el-table-column prop="" label="干燥系统" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources13Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources13 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="" label="膨胀涡轮" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources14Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources14 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="2003b降温">
+                      <el-table-column prop="" label="干燥系统" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources15Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources15 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="" label="气波机" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources16Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources16 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="" label="大气进气" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources17Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources17 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="2004降温">
+                      <el-table-column prop="" label="干燥系统" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources18Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources18 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="" label="气波机" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources19Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources19 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="2004加温">
+                      <el-table-column prop="" label="加温炉" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources20Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources20 }}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="" label="锅炉" width="120">
+                        <template #default="scope">
+                          <div class="_tableSpan">{{ scope.row.resources21Num }}</div>
+                          <div class="_tableSpan">{{ scope.row.resources21 }}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                  </el-table-column>
+                  <el-table-column label="水油气系统">
+                    <el-table-column prop="" label="自然水" width="120">
                       <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources3Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources3 }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources22Num }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources22 }}</div>
                       </template>
                     </el-table-column>
-                    <el-table-column label="中压" width="120">
+                    <el-table-column prop="" label="软化水" width="120">
                       <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources4Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources4 }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources23Num }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources23 }}</div>
                       </template>
                     </el-table-column>
-                    <el-table-column label="高压" width="120">
+                    <el-table-column prop="" label="燃油" width="120">
                       <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources5Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources5 }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources24Num }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources24 }}</div>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="" label="燃气" width="120">
+                      <template #default="scope">
+                        <div class="_tableSpan">{{ scope.row.resources25Num }}</div>
+                        <div class="_tableSpan">{{ scope.row.resources25 }}</div>
                       </template>
                     </el-table-column>
                   </el-table-column>
-                  <el-table-column label="2001a辅助气源">
-                    <el-table-column label="低压" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources6Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources6 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="中压" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources7Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources7 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="高压" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources8Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources8 }}</div>
-                      </template>
-                    </el-table-column>
+                </el-table>
+                <el-table :data="tableData" v-if="props.tableTitle === '年度生产计划'">
+                  <el-table-column type="index" label="序号" />
+                  <el-table-column prop="equipment" label="实验设备" />
+                  <el-table-column prop="tester" label="试验器名称" />
+                  <el-table-column label="1月">
+                    <el-table-column prop="resources1" label="1" />
+                    <el-table-column prop="resources2" label="2" />
+                    <el-table-column prop="resources3" label="3" />
+                    <el-table-column prop="resources4" label="4" />
                   </el-table-column>
-                </el-table-column>
-                <el-table-column label="抽气系统">
-                  <el-table-column label="2002抽气">
-                    <el-table-column label="一抽" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources9Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources9 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="二抽" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources10Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources10 }}</div>
-                      </template>
-                    </el-table-column>
+                  <el-table-column label="2月">
+                    <el-table-column prop="resources5" label="1" />
+                    <el-table-column prop="resources6" label="2" />
+                    <el-table-column prop="resources7" label="3" />
+                    <el-table-column prop="resources8" label="4" />
                   </el-table-column>
-                  <el-table-column label="2002a抽气">
-                    <el-table-column label="一抽" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources11Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources11 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="二抽" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources12Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources12 }}</div>
-                      </template>
-                    </el-table-column>
+                  <el-table-column label="3月">
+                    <el-table-column prop="resources9" label="1" />
+                    <el-table-column prop="resources10" label="2" />
+                    <el-table-column prop="resources11" label="3" />
+                    <el-table-column prop="resources12" label="4" />
                   </el-table-column>
-                </el-table-column>
-                <el-table-column label="空中预处理系统">
-                  <el-table-column label="2003制冷">
-                    <el-table-column prop="" label="干燥系统" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources13Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources13 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="" label="膨胀涡轮" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources14Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources14 }}</div>
-                      </template>
-                    </el-table-column>
+                  <el-table-column label="4月">
+                    <el-table-column prop="resources13" label="1" />
+                    <el-table-column prop="resources14" label="2" />
+                    <el-table-column prop="resources15" label="3" />
+                    <el-table-column prop="resources16" label="4" />
                   </el-table-column>
-                  <el-table-column label="2003b降温">
-                    <el-table-column prop="" label="干燥系统" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources15Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources15 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="" label="气波机" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources16Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources16 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="" label="大气进气" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources17Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources17 }}</div>
-                      </template>
-                    </el-table-column>
+                  <el-table-column label="5月">
+                    <el-table-column prop="resources17" label="1" />
+                    <el-table-column prop="resources18" label="2" />
+                    <el-table-column prop="resources19" label="3" />
+                    <el-table-column prop="resources20" label="4" />
                   </el-table-column>
-                  <el-table-column label="2004降温">
-                    <el-table-column prop="" label="干燥系统" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources18Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources18 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="" label="气波机" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources19Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources19 }}</div>
-                      </template>
-                    </el-table-column>
+                  <el-table-column label="6月">
+                    <el-table-column prop="resources21" label="1" />
+                    <el-table-column prop="resources22" label="2" />
+                    <el-table-column prop="resources23" label="3" />
+                    <el-table-column prop="resources24" label="4" />
                   </el-table-column>
-                  <el-table-column label="2004加温">
-                    <el-table-column prop="" label="加温炉" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources20Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources20 }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="" label="锅炉" width="120">
-                      <template #default="scope">
-                        <div class="_tableSpan">{{ scope.row.resources21Num }}</div>
-                        <div class="_tableSpan">{{ scope.row.resources21 }}</div>
-                      </template>
-                    </el-table-column>
+                  <el-table-column label="7月">
+                    <el-table-column prop="resources25" label="1" />
+                    <el-table-column prop="resources26" label="2" />
+                    <el-table-column prop="resources27" label="3" />
+                    <el-table-column prop="resources28" label="4" />
                   </el-table-column>
-                </el-table-column>
-                <el-table-column label="水油气系统">
-                  <el-table-column prop="" label="自然水" width="120">
-                    <template #default="scope">
-                      <div class="_tableSpan">{{ scope.row.resources22Num }}</div>
-                      <div class="_tableSpan">{{ scope.row.resources22 }}</div>
-                    </template>
+                  <el-table-column label="8月">
+                    <el-table-column prop="resources29" label="1" />
+                    <el-table-column prop="resources30" label="2" />
+                    <el-table-column prop="resources31" label="3" />
+                    <el-table-column prop="resources32" label="4" />
                   </el-table-column>
-                  <el-table-column prop="" label="软化水" width="120">
-                    <template #default="scope">
-                      <div class="_tableSpan">{{ scope.row.resources23Num }}</div>
-                      <div class="_tableSpan">{{ scope.row.resources23 }}</div>
-                    </template>
+                  <el-table-column label="9月">
+                    <el-table-column prop="resources33" label="1" />
+                    <el-table-column prop="resources34" label="2" />
+                    <el-table-column prop="resources35" label="3" />
+                    <el-table-column prop="resources36" label="4" />
                   </el-table-column>
-                  <el-table-column prop="" label="燃油" width="120">
-                    <template #default="scope">
-                      <div class="_tableSpan">{{ scope.row.resources24Num }}</div>
-                      <div class="_tableSpan">{{ scope.row.resources24 }}</div>
-                    </template>
+                  <el-table-column label="10月">
+                    <el-table-column prop="resources37" label="1" />
+                    <el-table-column prop="resources38" label="2" />
+                    <el-table-column prop="resources39" label="3" />
+                    <el-table-column prop="resources40" label="4" />
                   </el-table-column>
-                  <el-table-column prop="" label="燃气" width="120">
-                    <template #default="scope">
-                      <div class="_tableSpan">{{ scope.row.resources25Num }}</div>
-                      <div class="_tableSpan">{{ scope.row.resources25 }}</div>
-                    </template>
+                  <el-table-column label="11月">
+                    <el-table-column prop="resources41" label="1" />
+                    <el-table-column prop="resources42" label="2" />
+                    <el-table-column prop="resources43" label="3" />
+                    <el-table-column prop="resources44" label="4" />
                   </el-table-column>
-                </el-table-column>
-              </el-table>
-              <el-table :data="tableData" v-if="props.tableTitle === '年度生产计划'">
-                <el-table-column type="index" label="序号" />
-                <el-table-column prop="equipment" label="实验设备" />
-                <el-table-column prop="tester" label="试验器名称" />
-                <el-table-column label="1月">
-                  <el-table-column prop="resources1" label="1" />
-                  <el-table-column prop="resources2" label="2" />
-                  <el-table-column prop="resources3" label="3" />
-                  <el-table-column prop="resources4" label="4" />
-                </el-table-column>
-                <el-table-column label="2月">
-                  <el-table-column prop="resources5" label="1" />
-                  <el-table-column prop="resources6" label="2" />
-                  <el-table-column prop="resources7" label="3" />
-                  <el-table-column prop="resources8" label="4" />
-                </el-table-column>
-                <el-table-column label="3月">
-                  <el-table-column prop="resources9" label="1" />
-                  <el-table-column prop="resources10" label="2" />
-                  <el-table-column prop="resources11" label="3" />
-                  <el-table-column prop="resources12" label="4" />
-                </el-table-column>
-                <el-table-column label="4月">
-                  <el-table-column prop="resources13" label="1" />
-                  <el-table-column prop="resources14" label="2" />
-                  <el-table-column prop="resources15" label="3" />
-                  <el-table-column prop="resources16" label="4" />
-                </el-table-column>
-                <el-table-column label="5月">
-                  <el-table-column prop="resources17" label="1" />
-                  <el-table-column prop="resources18" label="2" />
-                  <el-table-column prop="resources19" label="3" />
-                  <el-table-column prop="resources20" label="4" />
-                </el-table-column>
-                <el-table-column label="6月">
-                  <el-table-column prop="resources21" label="1" />
-                  <el-table-column prop="resources22" label="2" />
-                  <el-table-column prop="resources23" label="3" />
-                  <el-table-column prop="resources24" label="4" />
-                </el-table-column>
-                <el-table-column label="7月">
-                  <el-table-column prop="resources25" label="1" />
-                  <el-table-column prop="resources26" label="2" />
-                  <el-table-column prop="resources27" label="3" />
-                  <el-table-column prop="resources28" label="4" />
-                </el-table-column>
-                <el-table-column label="8月">
-                  <el-table-column prop="resources29" label="1" />
-                  <el-table-column prop="resources30" label="2" />
-                  <el-table-column prop="resources31" label="3" />
-                  <el-table-column prop="resources32" label="4" />
-                </el-table-column>
-                <el-table-column label="9月">
-                  <el-table-column prop="resources33" label="1" />
-                  <el-table-column prop="resources34" label="2" />
-                  <el-table-column prop="resources35" label="3" />
-                  <el-table-column prop="resources36" label="4" />
-                </el-table-column>
-                <el-table-column label="10月">
-                  <el-table-column prop="resources37" label="1" />
-                  <el-table-column prop="resources38" label="2" />
-                  <el-table-column prop="resources39" label="3" />
-                  <el-table-column prop="resources40" label="4" />
-                </el-table-column>
-                <el-table-column label="11月">
-                  <el-table-column prop="resources41" label="1" />
-                  <el-table-column prop="resources42" label="2" />
-                  <el-table-column prop="resources43" label="3" />
-                  <el-table-column prop="resources44" label="4" />
-                </el-table-column>
-                <el-table-column label="12月">
-                  <el-table-column prop="resources45" label="1" />
-                  <el-table-column prop="resources46" label="2" />
-                  <el-table-column prop="resources47" label="3" />
-                  <el-table-column prop="resources48" label="4" />
-                </el-table-column>
-              </el-table>
+                  <el-table-column label="12月">
+                    <el-table-column prop="resources45" label="1" />
+                    <el-table-column prop="resources46" label="2" />
+                    <el-table-column prop="resources47" label="3" />
+                    <el-table-column prop="resources48" label="4" />
+                  </el-table-column>
+                </el-table>
+              </el-scrollbar>
             </div>
           </div>
         </dv-border-box-11>
@@ -702,16 +700,17 @@ onMounted(() => {
 
 <style lang="less" scoped>
 ._planExperiment {
-  height: calc(100vh - 176px);
+  height: calc(100vh - 148px);
   // background-color: rgba(40, 51, 52, 0.8);
   ._chartBox {
     height: calc((100% - 20px) / 3);
-    overflow: hidden;
     ._draggableItem {
       width: calc((100% - 40px) / 3);
       height: 100% !important;
-      overflow: hidden;
     }
+  }
+  .tableBox {
+    height: calc(100% - 40px);
   }
   ._tableSpan {
     margin: 2px 0px;

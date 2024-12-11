@@ -31,88 +31,51 @@
               </div>
               <div class="w-full h-full" id="runTimeChartDom" v-if="item.id === 1"></div>
               <div class="w-full h-full" id="useStatusChartDom" v-if="item.id === 2"></div>
+              <NoData v-if="item.id === 0 && isTechnologyStatusNoData" />
               <NoData v-if="item.id === 1 && isRunTimeNoData" />
+              <NoData v-if="item.id === 2 && isUseStatusNoData" />
             </div>
           </dv-border-box-11>
         </div>
       </VueDraggable>
     </div>
 
-    <div class="flex-1 w-full">
+    <div class="flex-1 w-full max-h-[66.66%]">
       <dv-border-box-11
         :color="['#6fbdc3', '#3a708a']"
         backgroundColor="rgba(40, 51, 52, 0.8)"
         :title="props.tableTitle"
         style="font-weight: 600"
       >
-        <div class="w-full h-full box-border px-8 pt-15 overflow-auto">
-          <!-- <el-table :data="deviceDetailData" stripe>
-            <el-table-column prop="name" label="设备状态要素">
-              <template #default="scope">
-                <span>{{ scope.row.name }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="technologyType" label="当前技术状态">
-              <template #default="scope">
-                <span>{{ scope.row.technologyType }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="useType" label="当前使用状态">
-              <template #default="scope">
-                <span>{{ scope.row.useType }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="todayRunTime" label="当日运行时长数">
-              <template #default="scope">
-                <span>{{ scope.row.todayRunTime }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="weekRunTime" label="本周运行时长数">
-              <template #default="scope">
-                <span>{{ scope.row.weekRunTime }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="monthRunTime" label="本月运行时长数">
-              <template #default="scope">
-                <span>{{ scope.row.monthRunTime }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="quarterRunTime" label="本季度运行时长数">
-              <template #default="scope">
-                <span>{{ scope.row.quarterRunTime }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="yearRunTime" label="本年运行时长数">
-              <template #default="scope">
-                <span>{{ scope.row.yearRunTime }} h</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="totalRunTime" label="累计运行时长数">
-              <template #default="scope">
-                <span>{{ scope.row.totalRunTime }} h</span>
-              </template>
-            </el-table-column>
-          </el-table> -->
-          <div class="w-full h-[98%]">
-            <table>
-              <!-- <caption>Awesome caption</caption> -->
-              <thead>
-                <tr v-for="(itme, index) in ultimateArray" :key="index">
-                  <th
-                    v-for="itmes in itme"
-                    :key="itmes.name"
-                    :colspan="itmes.colspan"
-                    :rowspan="itmes.rowspan"
-                    >{{ itmes.name }}</th
-                  >
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(itme, index) in tableData" :key="index">
-                  <td v-for="items in itme" :key="items.id">{{ items }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="w-full h-full box-border px-8 pt-15">
+          <div class="w-full _tableBox">
+            <NoData v-show="isNoData" />
+            <el-scrollbar height="100%">
+              <table v-if="!isNoData">
+                <!-- <caption>Awesome caption</caption> -->
+                <thead>
+                  <tr v-for="(itme, index) in ultimateArray" :key="index">
+                    <th
+                      v-for="itmes in itme"
+                      :key="itmes.name"
+                      :colspan="itmes.colspan"
+                      :rowspan="itmes.rowspan"
+                      >{{ itmes.name }}</th
+                    >
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(itme, index) in tableData" :key="index">
+                    <td
+                      v-for="(items, indexs) in itme"
+                      :key="indexs"
+                      :rowspan="items.name === 'remarks3' ? 6 : 1"
+                      >{{ items.value }}</td
+                    >
+                  </tr>
+                </tbody>
+              </table>
+            </el-scrollbar>
           </div>
         </div>
       </dv-border-box-11>
@@ -213,218 +176,112 @@ const systems = [
   { id: 100, name: '2001小供气系统2' }
 ]
 
-const deviceDetailData = ref<any>([
-  {
-    id: 90,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 8,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 80,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 8,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 95,
-    monthRunTime: 0,
-    name: '测试1.1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 9,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 91,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 9,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 92,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 10,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  },
-  {
-    id: 93,
-    monthRunTime: 0,
-    name: '测试1',
-    quarterRunTime: 0,
-    technologyType: '1',
-    todayRunTime: 0,
-    totalRunTime: 2561,
-    type: 10,
-    useType: '2',
-    weekRunTime: 0,
-    yearRunTime: 2561
-  }
-])
+const deviceDetailData = ref<any>([])
+
+const deviceRemarks = ref<any>({})
 
 const tableData = ref<any>([])
 
+// 删除字符串中第一个指定元素前的内容
 const removeContentBeforeFirstOccurrence = (str, element) => {
   const regex = new RegExp(`(.*?)${element}(.*)`)
   return str.replace(regex, '$2')
 }
 
+// 初始化数据结构
 const ultimateArray = ref<any>([])
-const showHeaderTitle = ref<any>(true)
+const showHeaderTitle = ref<boolean>(true)
+
 const mapData = async () => {
-  tableData.value[0] = deviceDetailData.value.map((item) => item.technologyType)
-  tableData.value[0].unshift('当前技术状态')
-  tableData.value[1] = deviceDetailData.value.map((item) => item.useType)
-  tableData.value[1].unshift('当前使用状态')
-  tableData.value[2] = deviceDetailData.value.map((item) => item.todayRunTime + ' h')
-  tableData.value[2].unshift('当日运行时长数')
-  tableData.value[3] = deviceDetailData.value.map((item) => item.weekRunTime + ' h')
-  tableData.value[3].unshift('本周运行时长数')
-  tableData.value[4] = deviceDetailData.value.map((item) => item.monthRunTime + ' h')
-  tableData.value[4].unshift('本月运行时长数')
-  tableData.value[5] = deviceDetailData.value.map((item) => item.quarterRunTime + ' h')
-  tableData.value[5].unshift('本季度运行时长数')
-  tableData.value[6] = deviceDetailData.value.map((item) => item.yearRunTime + ' h')
-  tableData.value[6].unshift('本年度运行时长数')
-  tableData.value[7] = deviceDetailData.value.map((item) => item.totalRunTime + ' h')
-  tableData.value[7].unshift('累计运行时长数')
-  ultimateArray.value[0] = []
-  ultimateArray.value[1] = []
-  //获取数据type
-  let arry = [...deviceDetailData.value.map((item) => item.type)]
-  // 查找记录每个id及个数
-  var obj = {}
-  for (var i = 0, l = arry.length; i < l; i++) {
-    var item = arry[i]
-    obj[item] = obj[item] + 1 || 1
-  }
+  ultimateArray.value = [[], []]
 
-  //组装每个id及上级合并行位数
-  let arry2 = ref<any>([])
-  for (let key in obj) {
-    arry2.value.push({ id: key, colspan: obj[key] })
-  }
+  // 统计每种类型的数量
+  const typeCounts = deviceDetailData.value.reduce((acc, item) => {
+    acc[item.type] = (acc[item.type] || 0) + 1
+    return acc
+  }, {})
 
-  // systems中查找对应type的数据
-  let arry3 = ref<any>([])
-  await arry2.value.forEach((item) => {
-    arry3.value.push(Object.assign({}, item, systems.filter((event) => event.id == item.id)[0]))
-  })
-  //删除第一个-之前的内容
-  arry3.value.forEach((element) => {
-    if (element.name.indexOf('-') === -1) {
-      ultimateArray.value[0] = deviceDetailData.value.map((item) => {
-        return {
-          name: item.name,
-          colspan: 1,
-          rowspan: 1
-        }
-      })
+  // 构建合并单元格数据
+  const typeMapping = Object.entries(typeCounts).map(([id, colspan]) => ({
+    id,
+    colspan,
+    ...systems.find((system) => system.id === Number(id))
+  }))
+
+  // 处理名称和生成结构
+  typeMapping.forEach((item: any) => {
+    if (!item.name || !item.name.includes('-')) {
+      ultimateArray.value[0] = deviceDetailData.value.map((d) => ({
+        name: d.name,
+        colspan: 1,
+        rowspan: 1
+      }))
       ultimateArray.value[0].unshift({
         name: '设备状态要素',
         colspan: 1,
         rowspan: 1
       })
+      ultimateArray.value[0].push({
+        name: '备注',
+        colspan: 1,
+        rowspan: 1
+      })
       showHeaderTitle.value = false
     } else {
-      element.name = removeContentBeforeFirstOccurrence(element.name, '-')
-      if (element.name.indexOf('-') !== -1) {
-        element.oneSpan = element.name.split('-')[0]
-        element.twoSpan = element.name.split('-')[1]
-      } else {
-        element.oneSpan = element.name
-      }
+      item.name = removeContentBeforeFirstOccurrence(item.name, '-')
+      const [oneSpan, twoSpan] = item.name.split('-')
+      item.oneSpan = oneSpan
+      item.twoSpan = twoSpan || null
     }
   })
 
+  // 如果不显示表头，直接返回
   if (!showHeaderTitle.value) return
 
-  let afterDate = ref<any>([])
-  arry3.value.forEach((element) => {
-    let flag = afterDate.value.find((item) => item.oneSpan === element.oneSpan)
-    if (!flag) {
-      afterDate.value.push({ oneSpan: element.oneSpan, origin: [element] })
+  // 按一级分类分组
+  const groupedData = typeMapping.reduce((acc: any, item: any) => {
+    const group: any = acc.find((g: any) => g.oneSpan === item.oneSpan)
+    if (group) {
+      group.origin.push(item)
     } else {
-      flag.origin.push(element)
+      acc.push({ oneSpan: item.oneSpan, origin: [item] })
     }
-  })
+    return acc
+  }, [])
 
-  afterDate.value.forEach((element) => {
-    let suncolspan = ref<any>(0)
-    element.origin.forEach((item) => {
-      suncolspan.value += item.colspan
-      if (element.origin.length > 1) {
+  // 构造最终的表格数据
+  groupedData.forEach((group) => {
+    const totalColspan = group.origin.reduce((sum, item) => sum + item.colspan, 0)
+    ultimateArray.value[0].push({
+      name: group.oneSpan,
+      colspan: totalColspan,
+      rowspan: group.origin.length > 1 ? 1 : 2
+    })
+
+    group.origin.forEach((item) => {
+      if (item.twoSpan) {
         ultimateArray.value[1].push({
           name: item.twoSpan,
           colspan: item.colspan,
           rowspan: 1
         })
-        ultimateArray.value[2] = deviceDetailData.value.map((item) => {
-          return {
-            name: item.name,
-            colspan: 1,
-            rowspan: 1
-          }
-        })
       }
-    })
-    ultimateArray.value[0].push({
-      name: element.oneSpan,
-      colspan: suncolspan.value,
-      rowspan: afterDate.value.every((obj) => obj.origin.length === 1)
-        ? 1
-        : element.origin.length > 1
-          ? 1
-          : 2
     })
   })
-  console.log(ultimateArray.value)
-  if (afterDate.value.every((obj) => obj.origin.length === 1)) {
-    ultimateArray.value[1] = deviceDetailData.value.map((item) => {
-      return {
-        name: item.name,
-        colspan: 1,
-        rowspan: 1
-      }
-    })
-  }
+
+  // 添加默认标题行
   ultimateArray.value[0].unshift({
     name: '设备状态要素',
     colspan: 1,
     rowspan: ultimateArray.value.length
   })
+  ultimateArray.value[0].push({
+    name: '备注',
+    colspan: 1,
+    rowspan: ultimateArray.value.length
+  })
+
+  console.log(ultimateArray.value)
 }
 
 const yearsValue = ref<string>(dayjs().locale('zh-cn').format('YYYY'))
@@ -444,19 +301,31 @@ const list1 = ref([
 ])
 
 // 当前技术状态
+const isTechnologyStatusNoData = ref(false)
 const GetTechnologyStatus = async () => {
   const chartData = ref<any>([]) // 如果不需要响应式，可直接使用普通数组
   try {
     const res = await getTechnologyStatus(props.deviceId)
 
-    if (res && res.data) {
+    if (res && Object.keys(res.data).length > 0) {
+      isTechnologyStatusNoData.value = false
       // 遍历对象的键值对，并转换为所需格式
       Object.entries(res.data).forEach(([key, value]) => {
         chartData.value.push({
-          name: key,
+          name:
+            key == '1'
+              ? '完好状态'
+              : key == '2'
+                ? '调试状态'
+                : key == '3'
+                  ? '检修状态'
+                  : '在建状态',
           value: value
         })
       })
+    } else {
+      isTechnologyStatusNoData.value = true
+      return
     }
 
     // 初始化图表
@@ -514,11 +383,11 @@ const initTechnologyStatusChart = (data) => {
         roseType: 'area', // 设置环形图的内外半径，实现环形效果
         // avoidLabelOverlap: false,
         label: {
-          show: false
+          show: true
         },
         labelLine: {
           normal: {
-            show: false // 不显示标签的连线
+            show: true // 不显示标签的连线
           }
         },
         data: data
@@ -536,12 +405,14 @@ const initTechnologyStatusChart = (data) => {
 }
 
 //当前使用状态
+const isUseStatusNoData = ref(false)
 const GetUseStatus = async () => {
   const chartData = ref<any>([]) // 如果不需要响应式，可直接使用普通数组
   try {
     const res = await getUseStatus(props.deviceId)
 
-    if (res && res.data) {
+    if (res && Object.keys(res.data).length > 0) {
+      isUseStatusNoData.value = false
       // 遍历对象的键值对，并转换为所需格式
       Object.entries(res.data).forEach(([key, value]) => {
         chartData.value.push({
@@ -549,6 +420,9 @@ const GetUseStatus = async () => {
           value: value
         })
       })
+    } else {
+      isUseStatusNoData.value = true
+      return
     }
 
     // 初始化图表
@@ -742,24 +616,106 @@ const changeYear = () => {
   GetRunTime()
 }
 
+const isNoData = ref<boolean>(false)
 const GetSystem = async () => {
   await getSystem(props.deviceId).then((res) => {
-    console.log(res.data)
-    // deviceDetailData.value = res.data.systemDetailVoList
+    if (res && res.data.systemDetailVoList.length) {
+      isNoData.value = false
+      deviceRemarks.value.remarks1 = res.data.remarks1
+      deviceRemarks.value.remarks2 = res.data.remarks2
+      deviceRemarks.value.remarks3 = res.data.remarks3
+      deviceDetailData.value = res.data.systemDetailVoList
+      // 构造表格数据的通用函数
+      const generateTableData = (key, label, name = '', remark = '', unit = '') => {
+        const data = ref<any>([])
+        if (key === 'technologyType') {
+          data.value = deviceDetailData.value.map((item) => {
+            return {
+              name: '',
+              value:
+                item[key] == 1 ? '完好' : item[key] == 2 ? '调试' : item[key] == 3 ? '检修' : '在建'
+            }
+          })
+        } else if (key === 'useType') {
+          data.value = deviceDetailData.value.map((item) => {
+            return {
+              name: '',
+              value: item[key] == 1 ? '使用' : item[key] == 2 ? '未使用' : ''
+            }
+          })
+        } else {
+          data.value = deviceDetailData.value.map((item) => {
+            return {
+              name: '',
+              value: `${item[key]}${unit}`
+            }
+          })
+        }
+        data.value.unshift({
+          name: '',
+          value: label
+        })
+        data.value.push({
+          name,
+          value: remark
+        })
+        return data.value
+      }
+
+      // 填充表格数据
+      if (props.tableTitle === '燃油系统') {
+        tableData.value = [
+          generateTableData('technologyType', '当前技术状态', '', deviceRemarks.value.remarks1),
+          generateTableData('useType', '当前使用状态', '', deviceRemarks.value.remarks2),
+          generateTableData(
+            'todayRunTime',
+            '当日消耗量',
+            'remarks3',
+            deviceRemarks.value.remarks3,
+            ' h'
+          ),
+          generateTableData('weekRunTime', '本周消耗量', '', '', ' 吨'),
+          generateTableData('monthRunTime', '本月消耗量', '', '', ' 吨'),
+          generateTableData('quarterRunTime', '本季度消耗量', '', '', ' 吨'),
+          generateTableData('yearRunTime', '本年度消耗量', '', '', ' 吨'),
+          generateTableData('totalRunTime', '累计消耗量', '', '', ' 吨')
+        ]
+      } else {
+        tableData.value = [
+          generateTableData('technologyType', '当前技术状态', '', deviceRemarks.value.remarks1),
+          generateTableData('useType', '当前使用状态', '', deviceRemarks.value.remarks2),
+          generateTableData(
+            'todayRunTime',
+            '当日运行时长数',
+            'remarks3',
+            deviceRemarks.value.remarks3,
+            ' h'
+          ),
+          generateTableData('weekRunTime', '本周运行时长数', '', '', ' h'),
+          generateTableData('monthRunTime', '本月运行时长数', '', '', ' h'),
+          generateTableData('quarterRunTime', '本季度运行时长数', '', '', ' h'),
+          generateTableData('yearRunTime', '本年度运行时长数', '', '', ' h'),
+          generateTableData('totalRunTime', '累计运行时长数', '', '', ' h')
+        ]
+      }
+    } else {
+      isNoData.value = true
+    }
   })
 }
 
-onMounted(() => {
-  mapData()
+onMounted(async () => {
   GetTechnologyStatus()
   GetUseStatus()
   GetRunTime()
-  GetSystem()
+  await GetSystem()
+  mapData()
 })
 </script>
 
 <style lang="less">
 ._titlePage {
+  height: calc(100vh - 148px);
   ._draggable1 {
     height: calc((100% - 20px) / 3);
     ._draggableItem {
@@ -767,9 +723,15 @@ onMounted(() => {
       overflow: hidden;
     }
   }
+
   .el-select__wrapper {
     background-color: rgba(23, 36, 41, 0.6) !important;
   }
+
+  ._tableBox {
+    height: calc(100% - 40px);
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;

@@ -34,9 +34,9 @@ setInterval(() => {
 </script>
 
 <template>
-  <div class="w-full h-25 _title px-25 py-4 box-border flex justify-between mb-7 font-bold">
+  <div class="w-full h-[7.5vh] _title px-25 py-1 box-border flex justify-between mb-7 font-bold">
     <span class="block w-75 text-6">{{ newTime }}</span>
-    <span class="text-9">{{ props.title }}</span>
+    <span class="text-[3.2vh]">{{ props.title }}</span>
     <div class="w-75 flex justify-end">
       <div
         class="_backBtn w-25 h-10 flex justify-center items-center cursor-pointer"
