@@ -30,14 +30,17 @@ const backPage = () => {
 <template>
   <div class="w-full h-full _home flex flex-col relative">
     <div
-      class="absolute z-2 top-2 right-25 cursor-pointer"
+      class="absolute z-2 top-1 right-25 cursor-pointer"
       v-if="showMenu"
       @click="showMenuItem = !showMenuItem"
     >
-      <img src="@/assets/image/menu.svg" alt="" class="w-8 h-8" />
-      <div class="absolute w-63 top-15 right-0 z-2 bg-[#172429] border-rd-2" v-if="showMenuItem">
+      <img src="@/assets/image/menu.svg" alt="" class="w-[1.66vw] h-[1.66vw]" />
+      <div
+        class="absolute w-[13.125vw] top-[5.55vh] right-0 z-2 bg-[#172429] border-rd-2"
+        v-if="showMenuItem"
+      >
         <dv-border-box-8>
-          <div class="p-4">
+          <div class="flex flex-col items-center py-4">
             <div
               class="_btnBox"
               :class="active === 'produce' ? '_active' : ''"
@@ -81,19 +84,19 @@ const backPage = () => {
   background-color: rgba(23, 36, 41, 0.6);
 }
 ._btnBox {
-  width: 220px;
-  height: 70px;
+  width: 11.45vw;
+  height: 6.5vh;
   cursor: pointer;
   text-align: center;
-  line-height: 70px;
+  line-height: 6.5vh;
   position: relative;
   > ._bgBox {
     position: absolute;
     top: 4px;
     left: 4px;
-    width: 212px;
-    height: 62px;
-    border-radius: 8px;
+    width: 11vw;
+    height: 5.7vh;
+    border-radius: 4px;
     background-color: rgba(23, 36, 41, 0.8);
   }
 }

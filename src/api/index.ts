@@ -20,10 +20,16 @@ export const getPlanStationUserNum = () => {
   return request.get({ url: '/tplay/screen/plan/planStationUserNum' })
 }
 
+// 试验岗位人数弹窗
+export const getPlanStationUser = (id) => {
+  return request.get({ url: `/tplay/screen/plan/planStationUser/${id}` })
+}
+
 // 本周工作量
 export const getWorkloadForWeek = () => {
   return request.get({ url: '/tplay/screen/plan/workloadForWeek' })
 }
+
 
 // 周计划
 export const getListByPlanweek = () => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-6 _footer mt-6"></div>
+  <div class="w-full h-[2.2vh] _footer mt-[2.2vh]"></div>
 </template>
 
 <style lang="less" scoped>

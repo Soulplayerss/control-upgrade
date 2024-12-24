@@ -55,6 +55,9 @@ watch(props, (newValue) => {
   }
 })
 
+let screenWidth =
+  window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+
 const tableTitle = ref<string>('')
 //打开保养
 const toTable = (name) => {
@@ -431,7 +434,7 @@ const initPlanRepaiPieChart = (value) => {
             formatter: function () {
               return value ? `${value}%` : `0%`
             },
-            fontSize: 26 // 字号
+            fontSize: screenWidth < 1680 ? 16 : screenWidth >= 1680 && screenWidth < 2000 ? 24 : 40 // 字号
           },
           emphasis: {
             // 鼠标悬浮时的标签样式
@@ -764,20 +767,22 @@ onMounted(() => {
               <div class="flex-1 h-full">
                 <div class="w-full h-full" id="maintenanceBarChartDom"></div>
               </div>
-              <div class="w-[200px] h-full ml-4 box-border pt-2 relative flex flex-col">
+              <div
+                class="w-[200px] h-full ml-4 box-border pt-2 relative flex flex-col text-[0.7vw]"
+              >
                 <div
                   class="h-1/2 flex flex-col items-center justify-end border-rd-2 box-border pb-[0.85vw]"
                 >
                   <dv-decoration-9 style="width: 5vw; height: 5vw"
                     >{{ planMaintenanceData.oneCompleteRate }}%</dv-decoration-9
                   >
-                  <span class="text-[0.7vw] pt-2">一保完成率</span>
+                  <span class="pt-2">一保完成率</span>
                 </div>
                 <div class="h-1/2 flex flex-col items-center border-rd-2 box-border">
                   <dv-decoration-9 style="width: 5vw; height: 5vw"
                     >{{ planMaintenanceData.twoCompleteRate }}%</dv-decoration-9
                   >
-                  <span class="text-[0.7vw] pt-2">二保完成率</span>
+                  <span class="pt-2">二保完成率</span>
                 </div>
               </div>
             </div>
@@ -800,7 +805,7 @@ onMounted(() => {
             </div>
             <div
               v-if="item.name === '维修任务模块'"
-              class="flex-1 gap-5 py-7.5 px-4 flex box-border text-[1vw]"
+              class="flex-1 gap-5 px-4 flex box-border text-[1vw]"
             >
               <div
                 class="_repairItem h-full border-rd-2 box-border p-4 flex flex-col justify-center items-center"
@@ -809,7 +814,7 @@ onMounted(() => {
                 <div class="flex-1 w-full box-border relative">
                   <div class="w-full h-full" id="plantemporaryNum"></div>
                   <span
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-10 font-bold color-[#FFF] z-2"
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[4vh] font-bold color-[#FFF] z-2"
                   >
                     {{ planRepaiData.plantemporaryNum }}
                   </span>
@@ -822,7 +827,7 @@ onMounted(() => {
                 <div class="flex-1 w-full box-border relative">
                   <div class="w-full h-full" id="monthTaskNum"></div>
                   <span
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-10 font-bold color-[#FFF] z-2"
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[4vh] font-bold color-[#FFF] z-2"
                   >
                     {{ planRepaiData.monthTaskNum }}
                   </span>

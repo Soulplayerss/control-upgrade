@@ -30,11 +30,12 @@
               <div class="w-full h-full" id="technologyStatusChartDom" v-if="item.id === 0"></div>
               <div class="w-full h-full flex flex-wrap box-border pt-2" v-if="item.id === 1">
                 <div
-                  class="w-1/2 h-1/2 flex flex-col items-center text-[0.7vw]"
+                  class="w-1/4 h-full flex flex-col items-center justify-center text-[0.7vw]"
                   v-for="(items, index) in stationUserNum"
                   :key="index"
+                  @click="stationClick(userNunList[index], index)"
                 >
-                  <dv-decoration-9 class="mb-1" style="width: 7vh; height: 7vh">{{
+                  <dv-decoration-9 class="mb-1" style="width: 4.7vw; height: 4.7vw">{{
                     items
                   }}</dv-decoration-9>
                   <span class="block text-center">{{ userNunList[index] }}</span>
@@ -306,7 +307,11 @@
                     </el-table-column>
                   </el-table-column>
                 </el-table>
-                <el-table :data="tableData" v-if="props.tableTitle === '年度生产计划'">
+                <el-table
+                  :data="tableData"
+                  :span-method="arraySpanMethod"
+                  v-if="props.tableTitle === '年度生产计划'"
+                >
                   <el-table-column type="index" label="序号" />
                   <el-table-column prop="equipment" label="实验设备" />
                   <el-table-column prop="tester" label="试验器名称" />
@@ -389,6 +394,13 @@
         </dv-border-box-11>
       </div>
     </div>
+
+    <el-dialog v-model="showStation" title="实验岗位人员" width="750">
+      <el-table :data="dialogStationList">
+        <el-table-column property="realName" label="岗位" />
+        <el-table-column property="name" :label="dialogStationName" />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -401,7 +413,8 @@ import {
   queryPlanweekresources,
   getCompletionStatus,
   getPlanStationUserNum,
-  getWorkloadForWeek
+  getWorkloadForWeek,
+  getPlanStationUser
 } from '@/api/index.ts'
 import NoData from './NoData.vue'
 import { VueDraggable } from 'vue-draggable-plus'
@@ -542,6 +555,55 @@ const GetPlanStationUserNum = () => {
   })
 }
 
+//开启实验岗位弹窗
+const showStation = ref<boolean>(false)
+const dialogStationList = ref<any>([])
+const dialogStationName = ref<string>('')
+const dialogStationEmunList = ref<any>([
+  {
+    id: 0,
+    name: '中心负责人'
+  },
+  {
+    id: 1,
+    name: '试验调度'
+  },
+  {
+    id: 2,
+    name: '主试验员'
+  },
+  {
+    id: 3,
+    name: '工艺技术负责人'
+  },
+  {
+    id: 4,
+    name: '电测技术负责人'
+  },
+  {
+    id: 5,
+    name: '工艺操作负责人'
+  },
+  {
+    id: 6,
+    name: '电测操作负责人'
+  },
+  {
+    id: 7,
+    name: '机械操作负责人'
+  }
+])
+const stationClick = (item: any, id) => {
+  showStation.value = true
+  dialogStationName.value = item
+  getPlanStationUser(id).then((res) => {
+    dialogStationList.value = res.data
+    dialogStationList.value.forEach((item) => {
+      item.realName = dialogStationEmunList.value.find((event) => item.id === event.id)?.name
+    })
+  })
+}
+
 //本周工作量
 const workloadForWeekDta = ref<any>({})
 const isUseStatusNoData = ref(false)
@@ -672,9 +734,57 @@ const GetListByPlanweek = () => {
 
 //获取年计划数据
 const GetListByPlanyear = () => {
-  getListByPlanyear('2004').then((res) => {
+  getListByPlanyear('2024').then((res) => {
     tableData.value = res.data
   })
+}
+
+// 获取连续相等的值的第一个和最后一个的下标
+function getAdjacentEqualIndices(arr: any) {
+  const result = ref<any>([])
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] === arr[i + 1]) {
+      let startIndex = i
+      while (startIndex > 0 && arr[startIndex - 1] === arr[startIndex]) {
+        startIndex--
+      }
+      let endIndex = i + 1
+      while (endIndex < arr.length - 1 && arr[endIndex] === arr[endIndex + 1]) {
+        endIndex++
+      }
+      result.value.push([startIndex, endIndex])
+    }
+  }
+
+  return uniqueFunc(result.value, 0)
+}
+// 去重
+function uniqueFunc(arr: any, uniId: any) {
+  const res = new Map()
+  return arr.filter((item: any) => !res.has(item[uniId]) && res.set(item[uniId], 1))
+}
+// 对象-》数组
+function arrFun(list: any) {
+  // let spanNum = 0
+  let listArr = ref<any>([])
+  for (const key in list) {
+    listArr.value.push(list[key])
+  }
+  return getAdjacentEqualIndices(listArr.value)
+}
+
+// @ts-ignore
+const arraySpanMethod = ({ row, column, rowIndex, columnIndex }: any) => {
+  let judgeArr: any = arrFun(row)
+  if (columnIndex >= 3) {
+    for (let index = 0; index < judgeArr.length; index++) {
+      if (columnIndex == judgeArr[index][0] + 3) {
+        return [1, judgeArr[index][1] - judgeArr[index][0] + 1]
+      } else if (columnIndex - 3 > judgeArr[index][0] && columnIndex - 3 < judgeArr[index][1] + 1) {
+        return [0, 0]
+      }
+    }
+  }
 }
 
 const GetqueryPlanweekresources = () => {
@@ -700,7 +810,7 @@ onMounted(() => {
 
 <style lang="less" scoped>
 ._planExperiment {
-  height: calc(100vh - 148px);
+  height: calc(100vh - 14.5vh);
   // background-color: rgba(40, 51, 52, 0.8);
   ._chartBox {
     height: calc((100% - 20px) / 3);

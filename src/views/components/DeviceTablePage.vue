@@ -715,7 +715,7 @@ onMounted(async () => {
 
 <style lang="less">
 ._titlePage {
-  height: calc(100vh - 148px);
+  height: calc(100vh - 14.5vh);
   ._draggable1 {
     height: calc((100% - 20px) / 3);
     ._draggableItem {
